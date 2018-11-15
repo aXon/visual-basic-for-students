@@ -1,0 +1,462 @@
+\chapter{Inheritance}
+	\label{ch:inheritance}
+
+	This chapter explains:
+	\begin{itemize}
+  	\item how to create a new class from an existing class using inheritance;
+    \item when and how to declare variables as \keyword{Protected};
+    \item when and how to use overriding;
+    \item how to draw a class diagram that describes inheritance;
+    \item how to use the \keyword{MyBase} keyword;
+    \item how to use abstract classes and \keyword{MustInherit}.
+	\end{itemize}
+
+	
+  \section{Introduction}
+		Programs are built from objects, which are instances of classes. Some classes are in the VB library and some classes the programmer writes. When you start to write a new program you look for useful classes in the library and you look at any classes you have written in the past. This OO approach to programming means that instead of starting programs from scratch, you build on earlier work. It's not uncommon to find a class that looks useful, and does nearly what you want, but not exactly what you want. Inheritance is a way of resolving this problem. With inheritance, you use an existing class as the basis for creating a modified class.
+Here is an analogy. Suppose you want to buy a new car and you go to a showroom and see a range of mass-produced cars. You like one in particular - but it doesn't have that special feature that you like. Like the description of a class, the car has been manufactured from plans that describe many identical cars. If inheritance was available, you could specify a car that had all the features of the mass-produced car, but with the added extras or changes that you require.
+
+
+	\section{Using inheritance}
+		We start with a class similar to one used already several times in this book. It is a class to represent a sphere. A sphere has a radius and a position in space. When we display a sphere on the screen, it will be shown as a circle. (The method to display a sphere simply calls the library method \keyword{DrawEllipse}.) The diameter of the sphere is fixed at 20 pixels. We have only modelled the $x$- and $y$-coordinates of a sphere (and not the $z$-coordinate) because we are displaying a two-dimensional representation on the screen.
+		
+		Here is the class description for a sphere. This class is normally placed in its own file, as we saw in \Cref{ch:classes}.
+		\begin{lstlisting}
+Public Class Sphere
+	Protected xCoord As Integer = 100, yCoord As Integer = 100
+	Protected myPen As Pen = New Pen(Color.Black)
+	Public WriteOnly Property X() As Integer
+		Set(value As Integer)
+			xCoord = value
+		End Set
+	End Property
+	Public WriteOnly Property Y() As Integer
+		Set(value As Integer)
+			yCoord = value
+		End Set
+	End Property
+	Public Overridable Sub Display(drawArea As Graphics) 					
+		drawArea.DrawEllipse(myPen, xCoord, yCoord, 20, 20)
+	End Sub
+End Class
+		\end{lstlisting}
+		You will notice that there are a number of new elements to this program, including the words \keyword{Protected} and \keyword{Overridable}. This is because the class has been written in such a way that it can be used for inheritance. We shall see during the course of this chapter what these new elements mean.
+		
+		Let us suppose that someone has written and tested this class, and made it available for use. But now we come to write a new program and find that we need a class very like this, but one that describes bubbles. This new class, called \keyword{Bubble}, will allow us to do additional things - to change the size of a bubble and move it vertically. The limitation of class \keyword{Sphere} is that it describes objects that do not move and whose size cannot change. We need an additional property that will allow us to set a new value for the radius of the bubble. We can do this without altering the existing class, instead writing a different class that uses the code that is already in \keyword{Sphere}. We say that the new class inherits variables, properties and methods from the old class. The new class is a subclass of the old. The old class is called the superclass of the new class. This is how we write the new class:
+		\begin{lstlisting}
+Public Class Bubble
+	Inherits Sphere
+	Protected radius As Integer = 10
+	Public WriteOnly Property Size() As Integer
+		Set(value As Integer)
+			radius = value
+		End Set
+	End Property
+	Public Overrides Sub Display(drawArea As Graphics)
+		drawArea.DrawEllipse(myPen, xCoord, yCoord,
+				2 * radius, 2 * radius)
+	End Sub
+End Class
+		\end{lstlisting}
+		This new class has the name \keyword{Bubble}. On the next line it says that it \keyword{Inherits Sphere}. This means that it inherits all the items not described as \keyword{Private} within class \keyword{Sphere}. We will explore the other features of this class in the following sections.
+
+
+	\section{\keyword{Protected}}
+		When you use inheritance, \keyword{Private} is just too private and \keyword{Public} is just too public. If a class needs to give its subclasses access to particular variables, properties or methods, but prevent access from any other classes, it can label them as \keyword{Protected}. In the family analogy, a mother allows her descendants to use her car keys but not anyone else.
+		
+		Looking at the class \keyword{Sphere}, we need variables to describe the coordinates:
+		\begin{lstlisting}
+Private xCoord, yCoord As Integer
+		\end{lstlisting}
+		This is a sound decision, but there may be a better idea. It might be that someone later writes a class that inherits this class and provides an additional method to move a sphere. This method will need access to the variables \keyword{xCoord} and \keyword{yCoord} - which are unfortunately inaccessible because they have been labelled \keyword{Private}. So to anticipate this possible future use, we might instead decide to label them as \keyword{Protected}:
+		\begin{lstlisting}
+Protected xCoord, yCoord As Integer
+		\end{lstlisting}
+		This declaration now protects these variables against possible misuse by any arbitrary classes, but permits access by certain privileged classes - the subclasses.
+		
+		Suppose we had declared these variables as \keyword{Private}, as originally planned. The consequence is that it would have been impossible to reuse the class as described. The only option would be to edit the class, replacing the description \keyword{Private} by \keyword{Protected} for these particular items. But this violates one of the principles of object-oriented programming, which is never to alter an existing class that is tried and tested. So when we write a class we strive to think ahead about possible future users of the class. The programmer who writes a class always writes it in the hope that someone will reuse the class by extending it. This is another of the principles of object-oriented programming. Careful use of \keyword{Protected} instead of \keyword{Public} or \keyword{Private} can help make a class more attractive for inheritance.
+		
+		In summary, the four levels of accessibility of a variable, property or method in a class are:
+		\begin{enumerate}
+			\item \keyword{Public} - accessible from anywhere. As a rule, any properties or methods offering a service to users of a class should be labelled as \keyword{Public}.
+			\item	\keyword{Protected} - accessible from this class and from any subclass.
+			\item	\keyword{Private} - accessible only from this class. As a rule, all instance variables should be declared as \keyword{Private}.
+			\item Local variables, those declared within a method, are never accessible from outside the particular method.
+		\end{enumerate}
+		So a class can have good, but controlled, access to its immediate superclass and the superclasses above it in the class hierarchy, just as if the classes are part of the class itself. If we make the family analogy, it is like being able to freely spend your mother's money or that of any of her ancestors - provided that they have put their money in an account labelled \keyword{Public} or \keyword{Protected}. People outside the family can only access \keyword{Public} money.
+
+
+	\section{Additional items}
+		An important way of constructing a new class from another is to include additional variables, properties and methods.
+		
+		You can see that the new class \keyword{Bubble} declares an additional variable and an additional property:
+		\begin{lstlisting}
+Protected radius As Integer = 10
+Public WriteOnly Property Size() As Integer
+	Set(value As Integer)
+		radius = value
+	End Set
+End Property
+		\end{lstlisting}
+		The new variable is \keyword{radius}, which is additional to the existing variables (\keyword{xCoord} and \keyword{yCoord}) in \keyword{Sphere}. The number of variables is thereby extended.
+		
+		The new class also has the property \keyword{Size} in addition to those in \keyword{Sphere}.
+
+	\begin{stqb}
+		\begin{STQ}
+			\item	A ball object is like a \keyword{Sphere} object, but it has the additional features of being able to move left and move right. Write a class called \keyword{Ball} which inherits the class \keyword{Sphere} but provides additional methods \keyword{MoveLeft} and \keyword{MoveRight}.
+		\end{STQ}
+	\end{stqb}
+
+	
+	\section{Overriding}
+		Another feature of the new class \keyword{Bubble} is a new version of the method Display.
+		\begin{lstlisting}
+Public Overrides Sub Display(drawArea As Graphics)
+	drawArea.DrawEllipse(myPen, xCoord, yCoord,
+		2 * radius, 2 * radius)
+End Sub
+		\end{lstlisting}
+		This is needed because the new class has a radius that can be changed, whereas in class \keyword{Sphere}, the radius was fixed. This new version of \keyword{Display} in \keyword{Bubble} supersedes the version in the class \keyword{Sphere}. We say that the new version overrides the old version. The old version has the description \keyword{Overridable} and the new version has the description \keyword{Overrides}.
+		
+		Do not confuse overriding with overloading, which we met in \Cref{ch:methods-arguments} on methods:
+		\begin{itemize}
+      \item Overloading means writing a method (in the same class) that has the same name, but different parameters.
+      \item Overriding means writing a method in a subclass that has the same name and parameters.
+		\end{itemize}
+		In summary, in the inheriting class we have:
+		\begin{itemize}
+      \item created an additional variable;
+      \item created an additional property;
+      \item overridden a method (provided a method which is to be used instead of the method that is already provided).
+		\end{itemize}
+		Let us sum up what we have accomplished. We had an existing class called \keyword{Sphere}. We had a requirement for a new class, \keyword{Bubble}, that was similar to \keyword{Sphere}, but needed additional facilities. So we created the new class by extending the facilities of the old class. We have made maximum use of the commonality between the two classes, and we have avoided rewriting pieces of program that already exist. Both of the classes we have written, \keyword{Sphere} and \keyword{Bubble}, are of course still available to use.
+		
+		Making an analogy with human families, inheritance means you can spend your own money and also that of your mother.
+As a detail we note that it is possible to override variables - to declare variables in a subclass that override variables in the superclass. We will not discuss this further for two reasons: one, there is never any need to do this, and two, it is very bad practice. When you subclass a class (inherit from it) you only ever:
+		\begin{itemize}
+      \item add additional methods and/or properties;
+      \item add additional variables;
+      \item override methods and/or properties.
+		\end{itemize}
+
+
+	\section{Class diagrams}
+		A good way to visualize inheritance is by using a \emph{class diagram}, as shown in \Vref{fig:inheritance_cd1}. This shows that \keyword{Bubble} is a subclass of \keyword{Sphere}, which is in turn a subclass of \keyword{Object}. Each class is shown as a rectangle. A line between classes shows an inheritance relationship. The arrow points from the subclass to the superclass.
+		
+		Every class in the library or written by the programmer fits within a class hierarchy. If you write a class beginning with the heading:
+		\begin{lstlisting}
+Public Class Sphere
+		\end{lstlisting}
+		which has no explicit superclass, it is implicitly a subclass of the class \keyword{Object}.
+
+		\Vref{fig:inheritance_cd2} shows another class diagram in which another class, called Ball, is also a subclass of \keyword{Sphere}. The diagram is now a tree structure, with the root of the tree, \keyword{Object}, at the top. In general a class diagram is a tree, like a family tree, except that it only shows one parent.
+
+
+		\begin{figure}[bth]
+			\centering
+			\begin{minipage}[t]{.45\textwidth}
+			  \centering
+				\begin{tikzpicture}[node distance=0.8cm,transform shape,scale=0.8]
+					\node (Object) [class] {Object};
+					\node (Sphere) [class, below = of Object] {Sphere};
+					\node (Bubble) [class, below = of Sphere] {Bubble};
+					
+					\draw[->] (Bubble) -- (Sphere);
+					\draw[->] (Sphere) -- (Object);
+				\end{tikzpicture}
+				\caption{Class diagram for \keyword{Sphere} and \keyword{Bubble}.}
+				\label{fig:inheritance_cd1}
+			\end{minipage}\hfill%5 create void between figures
+			\begin{minipage}[t]{.45\textwidth}
+				\centering
+				\begin{tikzpicture}[node distance=0.8cm,transform shape,scale=0.8]
+					\node (Object) [class] {Object};
+					\node (Sphere) [class, below = of Object] {Sphere};
+					\node (Bubble) [class, below left = of Sphere] {Bubble};
+					\node (Ball) [class, below right = of Sphere] {Ball};
+					
+					\draw[->] (Bubble) -- (Sphere);
+					\draw[->] (Ball) -- (Sphere);
+					\draw[->] (Sphere) -- (Object);
+				\end{tikzpicture}
+				\caption{Class diagram showing a tree structure.}
+				\label{fig:inheritance_cd2}
+			\end{minipage}
+		\end{figure}
+
+
+	\section{Inheritance at work}
+		As the class \keyword{Bubble} shows, a class often has a superclass, which in turn has a superclass, and so on up the inheritance tree. It is not only the \keyword{Public} and \keyword{Protected} items in the immediate superclass that are inherited, but all the \keyword{Public} and \keyword{Protected} variables, properties and methods in all of the superclasses up the inheritance tree. So you inherit from your mother, your grandmother and so on.
+		
+		The VB language allows a class to inherit from only one immediate superclass. This is called single inheritance. In the family analogy it means that you can inherit from your mother but not from your father.
+
+		Suppose we create an object \keyword{bubble1} from the class \keyword{Bubble}:
+		\begin{lstlisting}
+Dim bubble1 As Bubble = new Bubble()
+		\end{lstlisting}
+		What happens if we make use of the property \keyword{X} as follows?
+		\begin{lstlisting}
+bubble1.X = 200
+		\end{lstlisting}
+		Now \keyword{bubble1} is an object of the class \keyword{Bubble} but the property \keyword{X} is a property of a different class \keyword{Sphere}. The answer is that all the methods and properties labelled \keyword{Public} (and \keyword{Protected}) within the immediate superclass (and all the superclasses in the class hierarchy) are available to a subclass. And since \keyword{Bubble} is a subclass of \keyword{Sphere}, \keyword{X} is available to objects of class \keyword{Bubble}.
+		
+		The rule is that when a method or property is used, the VB system first looks in the class description of the object to find the method. If it cannot find it there, it looks in the class description of the immediate superclass. If it cannot find it there, it looks at the class description for the superclass of the superclass, and so on up the class hierarchy until it finds a method or property with the required name. In the family analogy, you implicitly inherit from your grandmother, your great grandmother and so on.
+
+		
+	\section{\keyword{MyBase}}
+		A class will sometimes need to call a method in its immediate superclass or one of the classes up the tree. There is no problem with this - the methods in all the classes up the inheritance tree are freely available, provided that they are labelled as \keyword{Public} or \keyword{Protected}. The only problem that can arise is when the desired method in the superclass has the same name as a method in the current class. To fix this problem, prefix the method name with the keyword \keyword{MyBase}. For example, to call the method \keyword{Display} in a superclass:
+		\begin{lstlisting}
+MyBase.Display(drawArea)
+		\end{lstlisting}
+		Generally this is neater and shorter than duplicating instructions and can help make a program more concise by making the maximum use of existing methods.
+
+	\section{Constructors}
+		Constructors were explained in \Cref{ch:classes} on writing classes. They allow us to pass parameters to an object when we create it using \keyword{New}. A constructor is a method with the name \keyword{New}. Remember that:
+		\begin{itemize}
+      \item if you write a class without constructors, VB assumes that there is a single constructor (with zero parameters);
+      \item if you write a class with one or more constructors with parameters, and a zero-parameter constructor is also needed, you must explicitly write it.
+		\end{itemize}
+		Constructor methods are not inherited. This means that if you need one or more explicit constructors - as you often will - in a subclass, you need to write them explicitly. Suppose, for example, we have an existing class, with two constructors:
+		\begin{lstlisting}
+Public Class Balloon
+	Protected xCoord, yCoord, radius As Integer
+	Public Sub New()
+		xCoord = 10
+		yCoord = 10
+		radius = 20
+	End Sub
+	Public Sub New(initialX As Integer,
+			initialY As Integer,
+			initialRadius As Integer)
+		xCoord = initialX
+		yCoord = initialY
+		radius = initialRadius
+	End Sub
+' remainder of class
+End Class
+		\end{lstlisting}
+		If we now write a new class that inherits from class \keyword{Balloon}, the options are:
+		\begin{enumerate}
+			\item	Do not write a constructor. VB assumes that there is a zero-parameter constructor.
+			\item	Write one or more explicit constructors.
+			\item	Write one or more explicit constructors that call a constructor in the superclass, using \keyword{MyBase}.
+		\end{enumerate}
+		However, VB forces us to call a constructor in the superclass, in the following way. If the first instruction in the constructor is not a call on a constructor in the superclass, then VB automatically calls the zero-parameter constructor in the superclass.
+		
+		For novice programmers it is probably wise to make things clear and therefore to explicitly write a call to a superclass constructor as the first instruction of every constructor, as shown in the following examples.
+		
+		Here is a subclass of \keyword{Balloon} with a constructor that calls the zero-parameter constructor in the superclass, using \keyword{MyBase}:
+		\begin{lstlisting}
+Public Class DifferentBalloon
+	Inherits Balloon
+	Public Sub New(initialX As Integer,
+			initialY As Integer)
+		MyBase.New()
+		xCoord = initialX
+		yCoord = initialY
+		radius = 20
+	End Sub
+' remainder of class
+End Class
+		\end{lstlisting}
+		and here is a subclass with a constructor that explicitly calls the second constructor in the superclass, again using \keyword{MyBase}:
+		\begin{lstlisting}
+Public Class ModifiedBalloon
+	Inherits Balloon
+	Public Sub New(initialX As Integer,
+		initialY As Integer,
+		initialRadius As Integer)
+		MyBase.New(initialX, initialY, initialRadius)
+	End Sub
+' remainder of class
+End Class
+		\end{lstlisting}
+
+		\begin{stqb}
+			\begin{STQ}
+				\item	A coloured sphere is like a sphere, but with some colour. Write a new class named \keyword{ColoredSphere} that inherits \keyword{Sphere} to provide a colour that can be set when the balloon is created. This is accomplished using a constructor method, so that your class should enable the following to be written:
+					\begin{lstlisting}
+Dim coloredSphere1 As ColoredSphere =
+	New ColoredSphere(Color.Red)
+					\end{lstlisting}
+
+				\item	What is wrong with the subclass in the following?
+					\begin{lstlisting}
+Public Class BankAccount
+		Protected deposit As Integer
+		Public Sub New(initialDeposit As Integer)
+			' remainder of constructor
+		End Sub
+' remainder of class	
+End Class
+Public Class BetterAccount
+		Inherits BankAccount
+		Public Sub New()
+			deposit = 1000	
+		End Sub
+' remainder of class
+End Class
+					\end{lstlisting}
+			\end{STQ}
+		\end{stqb}
+
+
+	\section{Abstract classes}
+		Consider a program that maintains graphical shapes of all types and sizes - circles, rectangles, squares, triangles, etc. These different shapes, similar to the classes we have already met in this chapter, have information in common - their position, colour and size. So we will declare a superclass, named \keyword{Shape}, that describes this common data. Each individual class inherits this common information. Here is the way to describe this common superclass:
+		\begin{lstlisting}
+MustInherit Class Shape
+	Protected xCoord, yCoord As Integer
+	Protected size As Integer
+	Protected myPen As Pen = New Pen(Color.Black)
+	Public Sub MoveRight()
+		xCoord = xCoord + 10
+	End Sub
+	Public MustOverride Sub Display(drawArea As Graphics)
+End Class
+		\end{lstlisting}
+The class to describe circles inherits from the class Shape as follows:
+		\begin{lstlisting}
+Public Class Circle
+	Inherits Shape
+	Public Overrides Sub Display(drawArea As Graphics)
+		drawArea.DrawEllipse(myPen, xCoord, yCoord, size, size)
+	End Sub
+End Class
+		\end{lstlisting}
+		It is meaningless to try to create an object from the class \keyword{Shape}, because it is incomplete. This is why the keyword \keyword{MustInherit} is attached to the header of the class, and the compiler will prevent any attempt to create an instance of this class. The method \keyword{MoveRight} is provided and is complete, and is inherited by any subclass. But the method \keyword{Display} is simply a header (without a body or an \keyword{End Sub} statement). It is described with the keyword \keyword{MustOverride} to say that any class must provide an implementation of the method. The class \keyword{Shape} is termed an abstract class because it does not exist as a full class but is provided simply to be used for inheritance.
+		
+		There is a reasonable rule that if a class contains any methods or properties that are \keyword{Overridable}, the class itself must be labelled as \keyword{MustInherit}.
+		
+		Abstract classes enable us to exploit the common features of classes. Declaring a class as abstract forces the programmer who is using the class (by inheritance) to provide the missing methods. This is a way, therefore, by which the designer of a class can encourage a particular design. The term abstract is used because as we look higher and higher up a class hierarchy, the classes become more and more general or abstract. In the example above, the class \keyword{Shape} is more abstract and less concrete than a \keyword{Circle}. The superclass abstracts features, such as the position and size in this example, that are common between its subclasses. It is common in large OO programs to find that the top few levels of the class hierarchies consist of abstract methods. Similarly in biology, abstraction is used with classes like mammals, which do not exist (in themselves), but serve as abstract superclasses to a diverse set of subclasses. Thus we have never seen a mammal object, but we have seen a cow, which is an instance of a subclass of mammal.
+
+		\begin{stqb}
+			\begin{STQ}
+				\item Write a class Square that uses the abstract class \keyword{Shape} given above.
+			\end{STQ}
+		\end{stqb}
+
+
+	\section{Programming principles}
+		Writing programs as a collection of classes means that programs are modular. Another bonus is that the parts of a program can be reused in other programs. Inheritance is another way in which OO programming provides potential for reusability. Very often programmers reinvent the wheel - they write new software when they could simply make use of existing software. One of the reasons for writing new software is that it is fun. But software is increasingly becoming more complex, so there simply is not enough time to rewrite. Imagine having to write the software to create the GUI components provided by the VB libraries. Imagine having to write a mathematical function like \keyword{Sqrt} every time you needed it. It would just take too long. So a good reason for reusing software is to save time. It is not just the time to write the software that you save, it is the time to test it thoroughly - and this can take even longer than actually writing the software. So reusing classes makes sense.
+
+		One reason why programmers sometimes don't reuse software is that the existing software doesn't do exactly what they need it to do. Maybe it does 90\% of what they want, but some crucial bits are missing or some bits do things differently. One approach would be to modify the existing software to match the new needs. This, however, is a dangerous strategy because modifying software is a minefield. Software is not so much soft as brittle - when you try to change it, it breaks. When you change software it is very easy to introduce new and subtle bugs into it, which necessitate extensive debugging and correction. This is a common experience, so much so that programmers are very reluctant to modify software. This is where OO programming comes to the rescue. In an OO program, you can inherit the behaviour of those parts of some software that you need, override those (few) methods and/or properties that you want to behave differently, and add new methods and/or properties to do additional things. Often you can inherit most of a class, making only the few changes that are needed using inheritance. You only have to test the new bits, sure in the knowledge that all the rest has been tested before. So the problem of reuse is solved. You can make use of existing software in a safe way. Meanwhile, the original class remains intact, reliable and usable.
+		
+		OO programming means building on the work of others. The OO programmer proceeds like this:
+		\begin{enumerate}
+			\item	Clarify the requirements of the program.
+			\item	Browse the library for classes that perform the required functions and use them to achieve the desired results.
+			\item	Review the classes within other programs you have written and use them as appropriate.
+			\item	Extend library classes or your own classes using inheritance when useful.
+			\item	Write your own new classes.
+		\end{enumerate}
+
+		This is why OO programs are often very short - they simply use the library classes or they create new classes that inherit from library classes. This approach requires an investment in time - the programmer needs a very good knowledge of the libraries. This idea of reusing OO software is so powerful that some people think of OO programming entirely in this way. In this view, OO programming is the process of extending the library classes so as to meet the requirements of a particular application.
+
+		Nearly every program in this book uses inheritance. Every program starts with these lines created automatically by the development environment:
+		\begin{lstlisting}
+Public Class Form1
+	Inherits Form
+		\end{lstlisting}
+		This says that the class \keyword{Form1} inherits features from the library class \keyword{Form}. The features in \keyword{Form} include methods for creating a graphical user interface (GUI) window with icons to resize and close the window. Extending the class \keyword{Form} is the main way in which the programs in this book extend the library classes.
+		
+		Beware: sometimes inheritance is not the appropriate technique. Instead, composition - using existing classes unchanged - is very often better. This issue is discussed in \Cref{ch:OO-design}on design.
+
+
+	\section{Programming pitfalls}
+		\begin{itemize}
+			\item Novice programmers use inheritance of a library class, the class \keyword{Form}, from their very first program. But learning to use inheritance within your own classes takes time and experience. It usually only becomes worthwhile in larger programs. 
+				
+				Don't worry if you don't use inheritance for quite some time.
+      \item It is common to confuse overloading and overriding:
+				\begin{itemize}
+					\item \keyword{Overloading} means writing two or more methods in the same class with the same name (but different parameters).
+					\item	\keyword{Overriding} means writing a method in a subclass to be used instead of the method in the superclass (or one of the superclasses above it in the inheritance tree).
+				\end{itemize}
+		\end{itemize}
+
+
+	\section{New language elements}
+		\begin{itemize}
+      \item \keyword{Inherits} - means that this class inherits from another named class.
+      \item \keyword{Protected} - the description of a variable, property or method that is accessible from within the class or any subclass (but not from elsewhere).
+      \item \keyword{Overridable} - describes a method or property that can be overridden in a subclass.
+      \item \keyword{Overrides} - describes a property or method that overrides an item in the superclass.
+      \item \keyword{MustInherit} - the description of an abstract class that cannot be created but is provided only to be used in inheritance.
+      \item \keyword{MustOverride} - the description of a property or method that is simply given as a header and must be provided by an implementation of the class.
+      \item \keyword{MyBase} - the name of the superclass of a class, the class it inherits from.
+		\end{itemize}
+
+
+	\section{Summary}
+		\begin{itemize}
+      \item Extending (inheriting) the facilities of a class is a good way to make use of existing parts of programs (classes).
+      \item A subclass inherits the facilities of its immediate superclass and all the superclasses above it in the inheritance tree.
+			\item A class has only one immediate superclass (it can only inherit from one class). This is called \emph{single inheritance} in the jargon of OOP.
+      \item A class can extend the facilities of an existing class by providing one or more of:
+				\begin{itemize}
+					\item additional methods and/or properties;
+					\item	additional variables;
+					\item	methods and/or properties that override (act instead of) methods in the superclass.
+				\end{itemize}
+      \item A variable, method or property can be described as having one of three types of access:
+				\begin{itemize}
+					\item \keyword{Public} - accessible from any class;
+					\item \keyword{Private} - accessible only from within this class;
+					\item \keyword{Protected} - accessible only from within this class and any subclass.
+				\end{itemize}
+      \item A class diagram is a tree showing the inheritance relationships.
+      \item The name of the superclass of a class is referred to by the word \keyword{MyBase}.
+      \item An abstract class is described as \keyword{MustInherit}. It cannot be instantiated to give an object, because it is incomplete. Such a class provides useful variables, properties and methods that can be inherited by subclasses.
+		\end{itemize}
+
+
+	\section{Exercises}
+		\begin{EXE}
+			\item	\name{Spaceship} Write a class \keyword{SpaceShip} that describes a spaceship. A spaceship is oval, but otherwise it behaves exactly like a \keyword{Balloon} object. Make maximum use of inheriting from the classes shown in the text.
+			Draw a class diagram to show how the different classes are related.
+			\item	\name{Pool} Write a class \keyword{PoolBall} which restricts the movements of a ball to a rectangle, corresponding to the cushions bordering a pool table. Make maximum use of inheriting from the classes shown in the text.
+			\item	\name{The bank} A class describes bank accounts and provides methods \keyword{CreditAccount}, \keyword{DebitAccount}, \keyword{CalculateInterest} and a \keyword{ReadOnly} property, \keyword{CurrentBalance}. There are two types of account - a regular account and a gold account. The gold account gives interest at 10\%, while the regular account gives interest at 1\% on credits above \$100. Write classes that describe the two types of account, making use of an abstract class to describe the common features. (Assume for simplicity that amounts of money are held as \keyword{Integer}.)
+			\item	Write an abstract class to describe two-dimensional graphical objects (square, circle, rectangle, triangle, etc.) that have the following features. All such objects share \keyword{Integer} variables that specify the $x$- and $y$-coordinates of the top left of a bounding rectangle, and \keyword{Integer} variables that describe the height and the width of the rectangle. All the objects share the same properties \keyword{X} and \keyword{Y} to set the values of these coordinates. All the objects share properties \keyword{Width} and \keyword{Height} to set the values of the width and height of the object. All the objects have a property \keyword{Area} which returns the area of the object and a method \keyword{Display} which displays it but these methods are different depending on the particular object.
+			\item	A three-dimensional drawing package supports three kinds of objects - cube, sphere and cone. All have a position in space, defined by $x$-, $y$- and $z$-coordinates. Each has a size, defined by a height, width and depth. Every object provides a method to move the object from the origin to a position in space. Every object provides a method to rotate it around the x-, y- and then z-axes. All the objects provide a method to display themselves. Write an abstract class to describe these three-dimensional objects.
+		\end{EXE}
+
+
+		\begin{stab}
+			\begin{enumChapter}
+				\item	
+					\begin{lstlisting}
+Public Class Ball
+	Inherits Sphere
+	Public Sub MoveLeft(amount As Integer)
+		xCoord = xCoord - amount
+	End Sub	
+	Public Sub MoveRight(amount As Integer)
+		xCoord = xCoord + amount
+	End Sub
+End Class
+					\end{lstlisting}
+				\item
+					\begin{lstlisting}
+Public Class ColoredSphere
+	Inherits Sphere
+	Private theColor As Color
+	Sub New(initialcolor As Color)
+		theColor = initialColor
+	End Sub
+End Class
+					\end{lstlisting}
+				\item	The compiler will find fault with the subclass. There is no explicit call to a constructor in the superclass. So VB will try to call a zero-parameter constructor in the superclass and no such method has been written.
+				\item
+					\begin{lstlisting}
+Public Class Square
+	Inherits Shape
+	Public Overrides Sub Display(drawArea As Graphics)
+		drawArea.DrawRectangle(myPen, xCoord, yCoord,
+			size, size)
+	End Sub
+End Class
+					\end{lstlisting}
+			\end{enumChapter}
+		\end{stab}
+

@@ -1,0 +1,395 @@
+\chapter{Databases}
+
+25
+Databases
+This chapter explains:
+l	the nature of simple databases and the SQL language;
+l	how SQL can be used with VB;
+l	the VB classes which provide database access.
+l	Introduction
+This chapter is for those who are familiar with creating a relational database (for 
+example via Microsoft Access) and who wish to manipulate the database with a VB 
+program. They might wish to do this because:
+l	As one of its tasks, the VB program needs some form of data store, and a database is most suitable.
+l	The programmer wishes to take advantage of the power of VB and its classes to provide a more powerful interface to a database than a conventional standalone database product allows.
+Though you are likely to be familiar with SQL (Standard Query Language), we provide a short introduction.
+l	The elements of a database
+Though this book assumes that the reader can create relational databases (and can 
+perform the prior analysis stages involving for example normalization), we will review the essential terminology.
+Here is an example of a database, which was created with Microsoft Access. It was stored in a ﬁle named MusicSales.mdb. It consists of two tables: the ﬁrst was named Artists, and the second was named Companies. Incidentally, we could have created the database by writing VB code, but using Access is simpler. The ﬁle can be downloaded from our website.
+Figure 25.1 shows the Artists table, involving recording artists, their management company and their music sales (in millions of dollars). Note that:
+l	The table is made up of a collection of similar records. In Figure 25.1 we have represented each record as a row.
+l	A record is made up of a number of ﬁelds. In Figure 25.1 we have three ﬁelds, named Artist, Company and Sales. Effectively, a ﬁeld name is a column name.
+l	The assumption has been made that artist names are unique, so we used this as 
+the primary key. However, if the table contained, for example, student names in a college, we would have to introduce a unique student ID number. For the above table, we set up the Artist ﬁeld as the primary key when we created it, and this prohibits us from introducing other artists with the same name.
+A database can consist of one or more such tables. Figure 25.2 shows the second table, named Companies (with Company set as the primary key for the table), which lists company names together with their location. The relationship between the tables is that the Company column of the Artists table is a foreign key of the Company column in the Companies table. This was speciﬁed when we designed the database.
+l	The SQL language – introduction
+SQL (Structured Query Language) was standardized in the mid-eighties, and since then has become the major language for database access. SQL statements can be used to retrieve and modify the contents of a database. Though it is possible to enter SQL statements manually, it is normal to present a simpler interface to the user. We shall do this in VB by building strings which contain SQL statements, and then sending the strings to the database. Thus, the SQL statements are hidden from the user.
+Before we do this, here are some examples of the most useful SQL statements. In traditional use, SQL statements must be terminated with a semicolon, but this is not needed when we pass an individual statement to the ADO.NET classes.
+The select statement
+This is used to retrieve records from a database. We can specify criteria that a record must match. Here are some examples, using the database we introduced earlier. Here we use lower-case for SQL key words (such as select and insert), but capitals can also be used.
+l	select Artist from Artists
+	This returns an item from every Artist ﬁeld in the Artists table (i.e. the complete Artist column).
+l	select * from Artists
+	This returns the items from every ﬁeld in the Artists table. Effectively, it returns the complete table.
+l	select * from Artists where Company = 'Media Ltd'
+	This returns only the records from Artists where the company is Media Ltd. We enclose strings in single quotes. Strings are case-sensitive, so use capitals where they were used in the original database.
+l	select * from Artists where Sales > 20
+	This returns only those records with sales above 20. Note that there are no quotes around numbers. The available operators are:
+	>  <  >=  <=  <>  =
+	where <> means ‘not equals’.
+l	select * from Companies where Company = 'ABC Co'
+	This returns the single record from Companies, involving ABC Co.
+l	select * from Artists order by Sales asc
+	The order by item can be added to any selection. We can use asc or desc to specify ascending or descending order. The above statement puts the records in ascending order of sales.
+The insert statement
+insert into Artists (Artist, Company, Sales)
+	values('The Regulars', 'ABC Co', 23.8)
+inserts a new record with the speciﬁed values. We provide a bracketed list of column names, and a bracketed list of values. Note that we can choose to split a long statement into several lines to improve its readability.
+The delete statement
+delete from Artists where Artist = 'RadioStar'
+delete from Artists where Company = 'ABC Co'
+deletes the speciﬁed record(s).
+The update statement
+update Artists set Sales = 30.8 where Artist = 'RadioStar'
+update Artists set Company = 'Class UK', Sales = 56.8
+	where Artist = 'RadioStar'
+updates the RadioStar record. The examples show, ﬁrst, a single ﬁeld being updated, then two ﬁelds. As with delete, it is possible to specify several records in the where item.
+This concludes our SQL overview. There are more statements, and even those we 
+illustrated have extensions. However, the above will sufﬁce for the programs in this chapter.
+l	The VB database classes
+Throughout its life, Microsoft has provided a series of approaches for database mani-
+pulation, including ODBC (Open DataBase Connectivity), and ADO (ActiveX Data Objects). The .NET framework now provides ADO.NET. It is termed an API (applica-
+tions program interface) – a set of classes and their methods which provide access to a complex item. For example, the ﬁle classes such as Directory are a kind of API, in that they enable programs to access the Windows ﬁle system.
+The ADO.NET classes we will use are:
+OleDbConnection, OleDbCommand, OleDbDataAdapter, DataTable, DataGridView, BindingNavigator and OleDbCommandBuilder.
+The OleDb namespace contains many of these classes, and you will see this used when we declare instances.
+You might wish to read this section whilst looking at the complete examples, whose screenshots are shown in Figures 25.3, 25.5 and 25.6.
+The OleDbConnection class
+This class deals with connecting to the database. We need to provide it with the ‘connection string’, which states the type of database (e.g. Oracle, Microsoft Access) and its location on disk. In our binding navigator example below, the VB system will do this initialization automatically, but in the other two examples, we do it manually.
+The OleDbDataAdapter class
+This class provides facilities for sending SQL statements to a database. This can involve transferring data from the database into DataTable objects held temporarily in RAM.
+The class structure of OleDbDataAdapter is rather complicated: it has some properties (named UpdateCommand, InsertCommand and DeleteCommand) which in their turn are instances of another complex class named OleDbCommand. In its turn, this class has its own properties and methods (such as CommandText). The Fill method lets us place the results of a query in a data table. The last two examples in this chapter show you how to use the class.
+The DataTable class
+Instances can hold a single table in RAM. The data is presented to the programmer in row/column form, rather like a 2-dimensional array. Note that it provides no visual representation of a table. We can choose to ﬁll a data table with an exact copy of a table in a database, or we can pick out the records we need. This is determined by the SQL string we send to the adapter.
+We can access individual items of a data table by using the Rows property, followed by a row number and column number, as in:
+Dim name As String
+name = CStr(dataTable.Rows(0)(1))
+Note that:
+l	rows and columns are numbered from 0 upwards;
+l	The data table holds instances of the class Object, so when we extract an item, we convert it to the appropriate type. (For example we convert an item to a String if it is to be displayed in a text box.)
+To ﬁnd out how many rows a data table currently contains, we use the Count property, as in:
+Dim lastRowNumber As Integer
+lastRowNumber = dataTable.Rows.Count - 1
+Remember that the rows are numbered from 0 upwards. To empty a data table, we use the Clear method.
+The row/column structure will be familiar to you from using arrays, and it is tempting to begin to write loops to search data tables. However, this is to be avoided. Try to do as much work as possible in SQL. This approach results in simpler code. The data grid view example shows the data table in use.
+The OleDbCommandBuilder class
+This class deals with generating a set of commands to update a database, based on changes that might have been made to a data table (perhaps via a data grid view user interface). The Save button in the second example (data grid view) shows it in use.
+The DataGridView class
+This visual control provides for the display of a DataTable in row/column format. It also allows the editing of existing data, and the insertion of new records at the bottom of the grid. Note that changes to the data are not automatically transferred to the database. We make use of an OleDbCommandBuilder to perform the updating.
+We use the DataSource property to ‘bind’ a data grid view to a data table. From then on, any changes to the table are automatically displayed in the grid. The data grid view is in the Data section of the toolbox, and is positioned in the same way as other controls.
+The BindingNavigator class
+This visual control provides a toolbar (normally placed along the top of a form) with buttons to step forwards and backwards through a database. It can be found in the Data section of the toolbox. It can control the contents of (for example) text boxes which have been bound to a database. Example 1 shows this in use.
+l	Adding a data connection to Visual Basic
+The ﬁrst stage in accessing an existing database from a program involves adding a data connection to the VB system. Before actually adding it, go through these steps:
+1.	Create a new project, then, without doing any coding, do File | Save All, choosing a suitable folder.
+2.	Using Windows Explorer, copy our supplied MusicSales.mdb into the folder which contains your project. In fact, the database can be stored anywhere, but this step ensures that if we move the program, the database moves with it.
+At the end of these preliminary steps, we have a new project and a database ﬁle ready to be connected. If the database you are accessing is on a network drive, simply create a new project.
+Adding a data connection – the detail
+Before the program can use a database, we need to tell the VB system about it. We add a data connection:
+1.	Choose View | Other Windows | Database Explorer. If this is not visible use the Server Explorer.
+2.	In the database explorer panel, right-click on Data Connections and choose Add Connection.
+3.	An Add Connection window opens. For our provided database, ensure that the data source is set to
+	Microsoft Access Database File. Click Continue.
+4.	Click Browse and choose the database ﬁle (e.g. MusicSales.mdb). Delete any existing text from the user name area and the password area.
+5.	Click Test Connection. You should see the message:
+		Test connection succeeded
+	If you don’t see the message, check that the above steps have been done properly.
+6.	Finally, click OK to close the Add Connection window. You will see the added database in the Database Explorer panel.
+Note:
+l	The VB system remembers any data connections that you add. For example, if 
+you create another new project, the Database Explorer panel will show previous databases. You might need to expand Data Connections to see them. To allow 
+a particular program to use a data connection, we make use of the Data Sources panel, described later.
+l	Databases have properties. In the Database Explorer panel, right-click on your database, choosing Properties. Its properties will be displayed at the bottom-right area of the screen, where the properties of controls are normally shown. Ensure that you can see the Connection String property. It looks something like:
+		Provider=Microsoft.Jet . . . etc
+	Later, you will need to copy and paste this text.
+l	Example 1: creating a BindingNavigator program
+Our ﬁrst program will let us scroll backwards and forwards through the records of 
+a database. Figure 25.3 shows the screen. We will not need to write code. Follow these steps:
+1.	Create a new project, and save it. If you need to, copy the database into your project folder.
+2.	Add a data connection to VB, as explained above. At the end of this process, the connection should be visible in the Database Explorer or the Server Explorer.
+3.	Now we use Add Data Source, obtained by clicking Data | Show Data Sources. In the Data Sources window, click on the Add New Data Source link.
+4.	The Data Source Conﬁguration Wizard runs. Choose Database, then Next.
+5.	Select Dataset, then Next. The Choose Your Data Connection step appears. From the list of added connections, choose the one you want, then Next.
+6.	A long message appears, asking if you want to copy the ﬁle to your project, and modify the connection. We suggest choosing No.
+	(Selecting No ensures that any changes you make to the original database are really made, so if you delete all the records accidentally, you will have to get 
+a fresh copy of it. However, it is clear to see that any code which changes the database is in fact working. If you choose Yes, your code operates on a copy 
+of the database, and there is the possibility of confusion between the original version and VB’s copy.)
+7.	A Save Connection String question appears. Just click Next.
+8.	A Choose Your Database Objects screen appears. Put a tick against Tables and click Finish.
+9.	The binding navigator can now make use of your database.
+Look at Figure 25.4. It shows the data source panel when every table has been expanded by clicking the arrow alongside them.
+Now comes the magic. We will create a program:
+l	In data sources, select Artist (not Artists) and drag it on to your form. Two things happen:
+	–	An empty text box and a label containing Artist are placed on the form. The text box is bound to the artist data in your database.
+	–	A binding navigator is placed across the top of the form. This happens when 
+the ﬁrst column name is dropped on to the form. This component controls the navigation of the bound controls, i.e. the data that is displayed in the text box.
+l	In addition, drag on Company and sales.
+l	Run the program – your screen should resemble Figure 25.3. Use the arrow controls to navigate through the data. You can also enter a record number.
+As it stands the program lets you update the database, but validation of new records 
+is not performed. To prevent updating, you could disable selected buttons within the navigator.
+l	Example 2: a DataGridView program
+This program shows the data grid view in action. Figure 25.5 shows the screen. The user enters a sales ﬁgure, and an SQL query is constructed which ﬁlls a data table with records whose sales are equal to or above the entered value. A value of 0 will select every record. The data grid can be edited, and changes can be made permanent via a Save button. At the bottom of the form, we show the generated SQL select command that is used. Here is the code:
+Public Class Form1
+	Private dataTable As New DataTable()
+	Private Sub HighSalesButton_Click _
+		(ByVal sender As System.Object, _
+		 ByVal e As System.EventArgs) _
+		 Handles HighSalesButton.Click
+		Dim command As String
+		Try
+			‘make a command
+			command = “select * from Artists where “ _
+					& “Sales >= “ & salesAboveBox.Text
+			‘SQLLabel.Text = command
+			‘create an adapter, incorporating an SQL select
+			Dim adapter As New OleDb.OleDbDataAdapter(command, _
+				TableAdapterManager.Connection.ConnectionString)
+			dataTable.Clear()
+			‘fill data table with results from sql select
+			adapter.Fill(dataTable)
+			DataGridView1.DataSource = dataTable
+		Catch exceptionObject As Exception
+			MessageBox.Show(exceptionObject.Message)
+		End Try
+	End Sub
+	Private Sub SaveButton_Click( _
+		 ByVal sender As System.Object, _
+		 ByVal e As System.EventArgs) _
+		 Handles SaveButton.Click
+		Try
+			‘create an adapter, selecting every artist
+			Dim adapter As New OleDb.OleDbDataAdapter _
+				(“select * from Artists”, _
+				 TableAdapterManager.Connection.ConnectionString)
+			Dim commandbuilder As New _
+					OleDb.OleDbCommandBuilder(adapter)
+			adapter.Update(dataTable)
+		Catch exceptionObject As Exception
+			MessageBox.Show(exceptionObject.Message)
+		End Try
+	End Sub
+	‘The following lines are generated automatically by VB
+	Private Sub Form1_Load(ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) Handles MyBase.Load
+		‘TODO: This code loads data into MusicSalesDataSet.Artists
+		‘ table. You can move, or remove it, as needed.
+		Me.ArtistsTableAdapter.Fill(Me.MusicSalesDataSet.Artists)
+	End Sub
+End Class
+Note:
+l	To create the program, there are several steps. First, create a new project. 
+Now, there is a choice. View the Database Explorer. If you created the BindingNavigator program earlier, the explorer will either show the MusicSales.mdb file, or it will be empty.
+l	If the explorer shows no files, you need to follow the steps shown earlier, to add 
+a data connection to VB. Conclude by testing the connection. Note that the VB system now knows about the file, but it has not been incorporated into any of your programs. Follow the next step to add the file to your program.
+l	If you want to use an existing file in the database explorer, choose Data | Show Data Sources. Choose Add New Data Source, and work through the Data Source Conﬁguration Wizard, as we did earlier with the binding navigator. Remember that here, you are adding a database to your program that the VB system already knows about.
+l	To access the database, we use its connection string, which provides details about the type and location of the database file. It is possible to use this value in a program as a string in quotes, but it is safer in this program to make use of the stored version in this property, available in:
+TableAdapterManager.Connection.ConnectionString
+	You will see this used as a parameter to data adapter methods.
+l	Place a data grid view on the form, from the Data section of the toolbox. A task window opens. Click on the grid to close the tasks. From the Data Sources window, drag Artists onto the grid. Add the additional buttons, label, and text box.
+l	The DataSource property of the grid is used to bind the data table. This means that when the table changes (via the Fill method) then the table is re-displayed 
+in the grid automatically.
+l	The data grid can be altered by the user:
+	–	To update a record, type in the new values.
+	–	To insert a new record, type it at the bottom of the grid, alongside the *.
+	–	To delete a record, click the button at the left of the record. This highlights all the ﬁelds. Press the delete key on the keyboard to delete it. Any changes are 
+not yet transferred to the ﬁle. You must use the Save command to do that.
+	–	To resize the columns, place the mouse between the buttons at the top of the columns, and drag.
+	–	To sort the records based on a particular column, click the button at the top of a column. Clicking again changes from ascending order to descending order.
+l	The program does not check for errors after each modiﬁcation of the data grid. For example, if the user enters a company that does not already exist in the Companies table, then this error will only come to light when we click Save. Thus, exception-handling is essential at the saving stage.
+
+self-test question
+25.1	How would you provide a Show All Records button for the user?
+l	Example 3: SQL example
+This program provides a form which allows the user to search, delete, insert and update records. Figure 25.6 shows the form, and here is the code:
+Public Class Form1
+	'set the 'connection string'
+	Private dbInfo As String = _
+	"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=E:\" + _
+	"bigdrive\VB2005book\codebychaps\database2005\MusicSales.mdb"
+	Private Sub FindButton_Click( _
+		ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles FindButton.Click
+		Try
+			Dim table As New DataTable()
+			Dim command As String
+			Dim recordCount As Integer
+			'set up an SQL query
+			command = "select * from Artists where " _
+				& "Artist = " & " '" & ArtistBox.Text & "'"
+			'create an adapter, incorporating a select command
+			Dim adapter As New _
+			OleDb.OleDbDataAdapter(command, dbInfo)
+			SQLLabel.Text = command
+			'do the query
+			table.Clear()
+			recordCount = adapter.Fill(table)
+			'display any result
+			If recordCount <> 0 Then ' we have a result
+				CompanyBox.Text = CStr(table.Rows(0)(1))
+				SalesBox.Text = CStr(table.Rows(0)(2))
+			Else
+				MessageBox.Show("Artist not found!!")
+			End If
+		Catch exceptionObject As Exception
+			MessageBox.Show(exceptionObject.Message)
+		End Try
+	End Sub
+	Private Sub UpdateButton_Click( _
+		ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles UpdateButton.Click
+		Dim connection As New OleDb.OleDbConnection(dbInfo)
+		Dim table As New DataTable
+		Dim oleDbUpdateCommand = New OleDb.OleDbCommand()
+		Try
+			connection.Open()
+			Dim adapter As New OleDb.OleDbDataAdapter()
+			Dim command As String
+			'set up an SQL update, using text boxes
+			command = "update Artists set Company = '" & _
+			CompanyBox.Text & "', " & "Sales = " & SalesBox.Text _
+				& " where Artist = '" & ArtistBox.Text & "'"
+			SQLLabel.Text = command
+			'put the update command in the adapter
+			oleDbUpdateCommand.Connection = connection
+			oleDbUpdateCommand.CommandText = command
+			adapter.UpdateCommand = oleDbUpdateCommand
+			'do the update
+			adapter.UpdateCommand.ExecuteNonQuery()
+		Catch exceptionObject As Exception
+			MessageBox.Show(exceptionObject.Message)
+		Finally
+			connection.Close()
+		End Try
+	End Sub
+	Private Sub InsertButton_Click( _
+		ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles InsertButton.Click
+		Dim connection As New OleDb.OleDbConnection(dbInfo)
+		Dim oleDbInsertCommand = New OleDb.OleDbCommand()
+		Dim command As String
+		Dim adapter As New OleDb.OleDbDataAdapter()
+		Try
+			connection.Open()
+			'make an SQL insert command
+			command = "insert into Artists" _
+				& "(Artist, Company, Sales )" _
+				& " values('" & ArtistBox.Text & "', '" _
+				& CompanyBox.Text & "', " & SalesBox.Text & ")"
+			SQLLabel.Text = command
+			'put the insert command into the adapter
+			oleDbInsertCommand.Connection = connection
+			oleDbInsertCommand.CommandText = command
+			adapter.InsertCommand = oleDbInsertCommand
+			' do the insert
+			adapter.InsertCommand.ExecuteNonQuery()
+		Catch exceptionObject As Exception
+			MessageBox.Show(exceptionObject.Message)
+		Finally
+			connection.Close()
+		End Try
+	End Sub
+	Private Sub DeleteButton_Click( _
+		ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles DeleteButton.Click
+		Dim connection As New OleDb.OleDbConnection(dbInfo)
+		Dim command As String
+		Dim oleDbDeleteCommand = New OleDb.OleDbCommand()
+		Dim rowsAffected As Integer
+		Dim adapter As New OleDb.OleDbDataAdapter()
+		Try
+			connection.Open()
+			'make an SQL delete command
+			command = "delete from Artists where Artist = '" _
+					& ArtistBox.Text & "';"
+			SQLLabel.Text = command
+			'put the delete command into the adapter
+			oleDbDeleteCommand.Connection = connection
+			oleDbDeleteCommand.CommandText = command
+			adapter.DeleteCommand = oleDbDeleteCommand
+			'do the command
+			rowsAffected = adapter.DeleteCommand.ExecuteNonQuery()
+			If rowsAffected = 0 Then  'nothing was altered
+				MessageBox.Show("Deletion not done.")
+			Else
+				MessageBox.Show("Deletion done.")
+			End If
+		Catch exceptionObject As Exception
+			MessageBox.Show(exceptionObject.Message)
+		Finally
+			connection.Close()
+		End Try
+	End Sub
+End Class
+Here are some points on the program:
+l	The program illustrates database access without using any of the VB database GUI classes. We use the connection string to access the database, and this is available from the database explorer window. Right-click on the database ﬁlename, and choose Properties. Copy the value of the Connection String property, and use it to initialise the string variable dbInfo, near the top of the code. Note that you need to delete any quotes from the original value of the connection string, then surround it with quotes to make it into an acceptable value for a string assignment statement.
+l	The user interface is not error-proofed. For example, an insert can be attempted even if all the ﬁelds are empty. The omission is intentional, to avoid obscuring the database code.
+l	To create the program, follow the setting-up process as used for the data grid 
+view example, then enter the code. The three text boxes have been renamed ArtistBox, CompanyBox and SalesBox.
+l	The code for inserting, deleting and updating is similar. It involves creating an instance of OleDbCommand, setting its properties (Connection and CommandText) and assigning it to the appropriate property of an adapter. Finally, ExecuteNonQuery 
+	actually carries out the command. It is important to follow the given coding sequence.
+l	Every time we create an SQL command, we display it in SQLLabel at the bottom 
+of the form, before executing the command. The reason is that, although the VB compiler makes detailed checks on your VB coding, it does not check the contents of strings, and knows nothing about SQL. Thus, SQL statement errors are only detected at run-time, and it is useful to have a display of the SQL code. Many errors are simple mistakes with single quotes.
+l	It is essential to use exception-handling. In this program, we display the Message property, which provides an explanation of any errors. Examples of errors that might be caught are:
+	–	trying to add a new record using a company not in the Companies table;
+	–	trying to add a record with a non-numeric sales ﬁgure.
+l	When deleting, inserting and updating, we need to open and close the connection. We place the Close call within the Finally of the exception-handling code, so that it is performed whatever happens within the Try.
+
+self-test question
+25.2	In the SQL example program, which text boxes need values when
+	(a) deleting a record?
+	(b) inserting a record?
+Programming principles
+This chapter has no new VB principles – we are using the power of the ADO classes.
+Programming pitfalls
+l	It is very easy to make errors when creating SQL strings. Take care with single quotes and, when debugging, display the SQL command.
+l	When executing queries with Fill, you do not need to use Open and Close. In every other case they are needed.
+Grammar spot
+l	The Rows property of a data table takes two bracketed integer expressions, and returns an Object. We convert it to our required type, as in:
+Dim n As Integer = CInt(table.Rows(3) (4))
+New language elements
+The classes:
+OleDbConnection
+OleDbCommand
+OleDbDataAdapter
+DataTable
+BindingNavigator
+DataGridView
+OleDbCommandBuilder
+New IDE facilities
+The Database Explorer can be used to make a database known to the VB system. The Data Sources panel is used to allow a database to be used by a particular program.
+Summary
+l	We have used the ADO.NET classes to access databases.
+l	A range of databases can be accessed, not only those created by Microsoft Access.
+l	The basic approach is to create and execute strings containing SQL statements.
+exercises
+We have based these exercises on the MusicSales.mdb database, because you may not have facilities to create your own database. When you download it, we advise you to save a backup copy, in case you accidentally delete all the contents.
+25.1	Write a program which allows the user to enter a company name, and which then displays the location of the company. Provide suitable error messages. Do not provide delete, insert and update facilities.
+25.2	Write a program which displays the number of companies in the database.
+25.3	Write a program which displays the highest sales figure, along with the name of the artist. (Reminder: SQL has an order by facility.)
+25.4	Write a program which displays the Artists table in a data grid, in ascending order of sales.
+25.5	Modify the SQL example program so that the insert operation first checks that the entered company exists in the Companies table. If it does not, ask the user if they wish to add a new company, and insert a new record into Companies if required.
+
+answers to self-test questions
+25.1	The coding for the button would be almost identical to the Sales Above 
+button, but the SQL command can be simplified to:
+		command = "select * from Artists"
+25.2	(a)	The Artist field needs a value. In the program, any values in other text boxes are ignored. We could enforce this with an If as follows:
+		If ArtistBox.Text <> "" Then
+			...code to delete a record
+		End If
+	(b)	All three text boxes need values.

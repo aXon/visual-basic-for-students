@@ -1,0 +1,301 @@
+\documentclass[twoside=off,10pt,a4paper,BCOR=0pt,DIV=8]{scrbook} 
+
+%% packages
+%%--------------------
+% extract to generate files for self test questions, answer and exercises
+%\usepackage[active,
+%  generate=Exercises,
+%  extract-env={stab,stqb,EXE},
+%  extract-cmd={chapter,section},
+%	section-labels={exercises}]{extract}
+
+	
+%\begin{extract*}
+% redefine horizontal space between number and TOC entries
+%\DeclareTOCStyleEntry[dynnumwidth=true,numwidth=1cm]{chapter}{chapter}
+\DeclareTOCStyleEntry[dynnumwidth=true,numwidth=9mm]{section}{section}
+\DeclareTOCStyleEntry[dynnumwidth=true,numwidth=9mm]{default}{subsection}
+
+% license
+\usepackage[type={CC}, modifier={by-nc-sa},version={4.0}]{doclicense}
+
+% fonts and language
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=uk]{english}
+\usepackage{fontspec}
+
+\newfontfamily{\sForget}{SansForgetica}
+
+\usepackage[final]{microtype}
+
+% displaying date and time
+\usepackage{datetime2}
+\DTMsetup{useregional}
+\DTMsavenow{thistime} % save current time
+
+
+% to use new LaTeX3 features
+\usepackage{xparse}
+
+\usepackage{textpos}
+\usepackage{zref-user,zref-totpages}
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+
+% configurable overrules from https://tex.stackexchange.com/a/28546 - does not work that well with latexmk/luatex - no colouring or change in height
+\usepackage[color=red, width=4pt,height=0.8\baselineskip]{overcolored}
+
+
+% source code listings
+\usepackage{listings}
+\lstset{language=VBScript}
+\lstset{% general command to set parameter(s) 
+	basicstyle=\small, % print whole listing small 
+	keywordstyle=\bfseries\ttfamily,
+	identifierstyle=, 
+	commentstyle=\color[RGB]{10,140,20}, % green color, 
+	stringstyle=\color{red}\ttfamily, 
+	showstringspaces=false,
+	extendedchars=true,
+	breaklines=true,
+	tabsize=2}
+
+%\usepackage[autogobble=true]{lstautogobble}
+% colour boxes e.g. for self test questions
+\usepackage[breakable,listings,skins]{tcolorbox}
+
+% environment for self test question boxes
+% usage: as any environment, special: use * as first input to enable plural
+\NewDocumentEnvironment{stqb}{sm}
+{\begin{tcolorbox}
+	[title = Self-Test Question\IfBooleanT{#1}{s},
+	title after break=Self-Test Question\IfBooleanT{#1}{s},
+	enhanced jigsaw,breakable,
+	left=0mm,right=0mm,bottom=0mm,top=0mm,
+	colback=red!3!white,colframe=red!75!black,pad at break=1mm]
+	#2
+}
+{\end{tcolorbox}}
+
+% environment for self test answer box
+% usage: as any environment, special: use * as first input to enable singular
+\NewDocumentEnvironment{stab}{sm}
+{\begin{tcolorbox}
+	[title = Answer\IfBooleanF{#1}{s} to Self-Test Question\IfBooleanF{#1}{s},
+	title after break = Answer\IfBooleanF{#1}{s} to Self-Test Question\IfBooleanF{#1}{s},
+	enhanced jigsaw,breakable,
+	left=0mm,right=0mm,bottom=0mm,top=0mm,
+	colback=red!3!white,colframe=red!75!black,pad at break=1mm]
+	#2
+}
+{\end{tcolorbox}}
+
+
+% table stuff
+\usepackage{booktabs}
+% modify cells in a table column
+\usepackage{collcell}
+
+% maths stuff
+\usepackage{amsmath}
+\usepackage{unicode-math}
+
+
+% create new lists for self-test questions and exercises
+\usepackage{enumitem}
+\usepackage{etoolbox}
+
+
+\newlist{enumChapter}{enumerate}{1}
+\setlist[enumChapter,1]{label=\thechapter.\arabic{*}}
+\preto\chapter{%
+\restartlist{enumChapter}%
+}
+
+% resume series need to be reset https://tex.stackexchange.com/questions/226081/enumitem-resume-reset-at-section
+\newlist{STQ}{enumerate}{1}
+\setlist[STQ,1]{label=\thechapter.\arabic{*},resume=STQ}
+\makeatletter
+\preto\chapter{%
+\let\enit@resume@series@STQ\@empty
+}
+\makeatother
+
+\newlist{EXE}{enumerate}{1}
+\setlist[EXE,1]{label=\thechapter.\arabic{*},resume=EXE}
+\makeatletter
+\preto\chapter{%
+\let\enit@resume@series@EXE\@empty
+}
+\makeatother
+
+
+\newlist{enumAlph}{enumerate}{1}
+\setlist[enumAlph,1]{label=(\alph*)}
+
+\setlist[itemize]{label=\textbullet,noitemsep} % ready to be changed in the future
+
+
+% text inline keywords using lstlisting
+\NewDocumentCommand\keyword{m}{\texttt{\bfseries #1}}
+\NewDocumentCommand\ui{m}{\textbf{#1}}
+\NewDocumentCommand\name{m}{\textbf{#1}}
+
+
+%\let\emph\relax % there's no \RedeclareTextFontCommand
+%\DeclareTextFontCommand{\emph}{\bfseries}
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows,intersections,positioning,calc,matrix,fit}
+
+% shapes for flowcharts
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=2cm, minimum height=0.8cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=1cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{loopstart} = [chamfered rectangle, chamfered rectangle corners={north west, north east}, minimum height=0.8cm,minimum width=2cm, text centered, draw=black, fill=green!30]
+\tikzstyle{loopstop} = [chamfered rectangle, chamfered rectangle corners={south west, south east}, minimum height=0.8cm, minimum width=2cm, text centered, draw=black, fill=green!30]
+\tikzstyle{process} = [rectangle, minimum width=2cm, minimum height=1cm, text centered, text width=2cm, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% shapes for class diagrams
+\tikzstyle{class} = [rectangle, minimum width=2cm, minimum height=0.8cm,text centered, draw=black]
+
+%% -------------------------------------- Declare the layers
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+% stock duck image placeholders
+\usepackage{tikzducks}
+
+\usepackage{varioref}
+
+\usepackage{hyperref}
+\hypersetup{
+plainpages=false,
+colorlinks=false,
+pdfborder={0 0 0},
+breaklinks=true,
+pdftitle={Visual Basic for Students},
+pdfsubject={},
+pdfauthor={Dr Nils Bausch},
+pdfkeywords={Visual Basic, Visual Studio, programming},		
+pdfdisplaydoctitle=true,  	    
+anchorcolor=cyan,
+linkcolor=magenta
+}
+
+\usepackage{hyperxmp}
+\usepackage{cleveref}
+
+
+% to avoid warnings for PDF strings, disable the new \keyword command. Modified from  https://tex.stackexchange.com/questions/10555/hyperref-warning-token-not-allowed-in-a-pdf-string/10557
+\pdfstringdefDisableCommands{%
+  \def\keyword#1{#1}%
+}
+
+
+
+\begin{document}
+
+% book class stuff
+\title{\sForget Visual Basic for Students}
+\author{Douglas Bell, Mike Parr \& Nils Bausch}
+\date{\DTMenglishmonthname{\DTMfetchmonth{thistime}} \DTMfetchyear{thistime} (work in progress)}
+\titlehead{}
+\publishers{Published by Nils Bausch}
+
+%\end{extract*}
+
+
+
+%	\begin{extractskip} % do not extract title, preface , etc
+
+	\maketitle 
+
+	% blank page
+	\thispagestyle{empty}
+	\null\newpage
+
+	
+	% front matter %
+	\thispagestyle{empty}
+	\begin{textblock*}{80mm}(85mm,90mm)
+	%\textblockcolour{red}
+	\noindent
+	{\sffamily\LARGE\bfseries Visual Basic for Students}\\
+	\noindent
+		{\sffamily\small Douglas Bell, Mike Parr \& Nils Bausch}\\
+	{\color{darkgray}\rule[5pt]{170pt}{3pt}}
+	\end{textblock*}
+	\null\newpage
+
+	% license page %
+	\thispagestyle{empty}
+	\include{license}
+
+	% blank page with note
+	\thispagestyle{empty}
+	\null
+	\vspace*{\fill}
+	\hfill\textit{To everyone who helped}
+	\vspace*{\fill}
+	\newpage
+
+	% blank page
+	\thispagestyle{empty}
+	\null\newpage
+
+
+	\frontmatter 
+	\tableofcontents 
+	\listoffigures 
+	\listoftables 
+
+
+	\include{chapter/preface}
+	
+%	\end{extractskip}
+
+
+% A glossary and list of acronyms may go here 
+% or may go in the back matter. 
+
+\mainmatter 
+
+\include{chapter/VB-background}
+\include{chapter/visual-studio}
+\include{chapter/graphics-intro}
+\include{chapter/variables-calculations}
+\include{chapter/methods-arguments}
+\include{chapter/objects}
+\include{chapter/selection}
+\include{chapter/repetition}
+\include{chapter/debugging}
+\include{chapter/classes}
+\include{chapter/inheritance}
+\include{chapter/calculations}
+\include{chapter/data-structures}
+\include{chapter/arrays}
+\include{chapter/arrays-2d}
+\include{chapter/strings}
+\include{chapter/exceptions}
+\include{chapter/files}
+%\include{chapter/console-programs}
+%\include{chapter/OO-design}
+%\include{chapter/program-style}
+%\include{chapter/testing}
+%\include{chapter/interfaces}
+%\include{chapter/polymorphism}
+%\include{chapter/databases}
+
+%\backmatter
+
+% A glossary and list of acronyms may go here 
+% or may go in the front matter after the abstract. 
+
+% The bibliography will go here 
+
+\end{document} 

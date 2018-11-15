@@ -1,0 +1,283 @@
+\chapter{Program style}
+
+21
+Program style
+This chapter suggests style guidelines for:
+l	program layout;
+l	comments;
+l	constants;
+l	classes;
+l	nested If statements and loops;
+l	complex conditions;
+l	documentation.
+l Introduction
+Programming is a highly creative and exciting activity. Programmers often get very absorbed in their work and regard the programs that they produce as being very much their personal creations. The stereotypical programmer (man or woman) wears jeans and a T-shirt. He or she drinks 20 cups of coffee in a day and stays up all night just for the fun of programming.
+But the facts of programming life are often rather different. Most programming is done within commercial organizations. Most programs are worked on by several different people. Many organizations have standards manuals that detail what programs should look like.
+When you write a program it is tempting to see it as your own individual creation. But most programs are read by several people. Others are: the people who take on your work when you get promoted or move to another project, the people who will test your program, and the generations of programmers who will look after your program, ﬁxing bugs and making improvements long after you have got another job. So, making your program easy to read is a vital ingredient of programming.
+Another aspect of good style is reusability. A program that exhibits style will contain classes that can be reused later in another program.
+Though people’s views on programming style often differ, one thing that they always agree on is that a style should be applied consistently throughout a program. If the style is inconsistent it makes the program hard to read (not to say annoying). It also creates a worry that the original programmer did not really care about the program and that there is something wrong with it. Throughout this book we have used one consistent style for the layout of programs.
+Unless you are a hobbyist, it is important to know how to produce programs that have good style. We have endeavoured to write stylish programs that serve as good examples throughout this book.
+l Program layout
+There is plenty of scope for creativity and individuality in coding a program. However, as we have seen, most programs are read by several people other than the original author. So good appearance is vital. We will now look at a set of style guidelines for VB programs. There is always controversy about guidelines like these. No doubt you, the reader, will disagree with some of them.
+Names
+The programmer gives names to variables, classes, properties and methods. There is plenty of scope for imagination because names can be as long as 255 characters, provided that they consist of letters, digits and underscore, and provided that the name starts with a letter.
+The advice on names is to make them as meaningful as possible. This rules out cryptic names like i, j, x, y, which usually signify that the programmer has some background in mathematics (but not much imagination for creating meaningful names). But even short names can be appropriate on the right occasion. For example, we often use x and y in this book to describe the x- and y-coordinates of a point in a picture box.
+It is often the case that you want to build a name from a number of words. Use capital letters to distinguish the words within the name – for example WishYouWereHere.
+Most names start with a capital letter, but a few should start with lower case. The suggested convention is as follows:
+Start with a capital:	Start with lower case:
+keyword	parameter
+class	local variable
+method	instance variable
+property
+The VB IDE gives default names to controls and these are OK as long as there is only one control of each type. But when there is more than one of a kind, for example 
+several buttons or labels, we suggest replacing the default name with a distinctive name such as CalculateButton, AgeTextBox, ResultLabel.
+Indentation
+Indentation emphasizes program structure. While VB and its compiler do not need indentation, it assists us humans in understanding a program when selection and looping statements are indented appropriately. Fortunately the VB Integrated Development Environment automatically indents programs.
+VB programs often contain long lines, which disappear off to the right of the 
+window. To see the whole line at once, we need to break the line (with a space and underscore) at a suitable point. Though you can break a line anywhere, it is clearest 
+to break it at, say, a comma, rather than in the middle of a word. The remainder of 
+the line should then be indented to show the structure of the statement. Look at 
+how we have indented the event-handling methods throughout this book to see this 
+in action.
+Blank lines
+Blank lines are often used within a class to separate the variable declarations from 
+the methods and properties, and one method or property from another. If there 
+are a lot of variable declarations, different blocks of data can also be separated by 
+blank lines.
+Classes and ﬁles
+You can hold all your classes in a single ﬁle, but it is probably better to place them in different ﬁles so that there is the maximum chance of them being reused. The IDE assists with this maintenance.
+l Comments
+There are two ways of putting comments into VB programs:
+’ this is a comment to the end of the line
+REM this is a comment on a line by itself
+ There is always great controversy about comments in programs. Some people argue that ‘the more the better’. However, sometimes you see code like this:
+’ display the hello message
+TextBox1.Text = “hello”
+in which the comment merely repeats the code, and is therefore superﬂuous.
+Sometimes code is overwhelmed by suffocating comments which add little to the understanding of the code. It is like a Christmas tree that is overwhelmed with tinsel, baubles and lights – you can’t see the tree for the decorations. There is another problem: some studies have shown that, where there are a lot of comments, the reader reads the comments and ignores the code. Thus, if the code is wrong, it will remain so.
+Some people argue that comments are needed when the code is complex or difﬁcult to understand in some way. This seems reasonable until you wonder why the code needs to be complex in the ﬁrst place. Sometimes, perhaps, the code can be simpliﬁed so that it is easy to understand without comments. We give example of such situations below.
+Some programmers like to place a comment at the start of every class and, perhaps, the start of a property or method in order to describe its overall purpose. Class, property and method names should, of course, try to describe what they do, so a comment may be redundant.
+Our view is that perhaps comments should be used sparingly and judiciously. For example, a complex section of code may need an explanatory comment.
+l Using constants
+Many programs have values that do not change while the program is running and don’t change very often anyway. Examples are a tax rate, the age for voting, the threshold for paying tax and mathematical constants. VB provides the facility to declare data items as constants and give them a value. So, for these examples, we can write:
+Const taxRate As Double = 17.5
+Const votingAge As Integer = 18
+Const taxThreshold As Integer = 5000
+Variables like this with constant values can only be declared at the top of a class and not as local variables within a method.
+Strings can also be given constant values (but arrays cannot):
+Const ourPlanet As String = “Earth”
+One beneﬁt of using Const values is that the compiler will detect any attempt (no doubt by mistake!) to change the value of a constant. Thus, for example, given the declaration above:
+votingAge = 17
+will provoke an error message.
+Another, more powerful, beneﬁt is that a program that otherwise might be peppered with rather meaningless numbers, instead contains variables (which are constant) with clear, meaningful names. This enhances program clarity, with all its consequent beneﬁts.
+Suppose, for example, we need to alter a tax program to reﬂect a change in regulations. We have a nightmare task if the tax thresholds and tax rates are built into the program as numbers that appear as-and-when throughout the program. Suppose that the old tax threshold is $5000. We could use a text editor to search for all occurrences of 5000. The editor will dutifully tell us where all the occurrences are, but we are left unsure that this number has the same meaning everywhere. What if the number 4999 appears in the program? Is it the tax threshold minus 1? Or does it have some other completely unrelated meaning? The answer, of course, is to use constants, with good names, and to distinguish carefully between different data items.
+Another common use for constants is to specify the sizes of any arrays used in a program, as in:
+Const maxIndex As Integer = 10
+and thereafter:
+Dim myArray(maxIndex) As Integer
+Finally, some people favour the style in which the names of constants are written in
+CAPITALS, so that they are distinctive.
+l Classes
+Classes are an important building block of OO programs. Good design of classes helps to ensure that the program is clear and comprehensible. Chapter 20 on object-oriented design (OOD) explains an approach to design. OOD attempts to create classes that 
+correspond to ideas in the problem being solved and these classes are usually present in the speciﬁcation for the program. Thus a good design will be such that the classes are recognizable as being a model of the speciﬁcation. As a by-product, the design will reﬂect the complexity of the problem and no more.
+Classes are also the unit that facilitates reusability of software components. It is a class that is inherited, or extended. So it is important that classes have good style. Here are some guidelines.
+Class size
+If a class is longer than, say, two pages it may be too long and complex. Consider carefully dividing it into two or more classes, in such a way as to create viable new classes. It is damaging, however, to divide a coherent class into clumsy incoherent classes. A coherent class is one in which all the parts contribute towards a single idea.
+Method size
+It is possible to get into long and enjoyable arguments about how long a method should be.
+One view is that a method should not be longer than the screen or a single page of listing (say 40 lines of text). That way, you do not have to scroll or turn a page to study it as a whole. You can thoroughly study the method in its entirety. It is not so long that you lose track of some parts of it.
+Any method that is longer than half a page is a serious candidate for restructuring into smaller methods. However, it depends on what the method does – it may do a 
+single cohesive task, and an attempt to split it up may introduce complications involving parameters and scope. Do not apply any length recommendation blindly.
+Encapsulation
+The idea of object-oriented design is to hide or encapsulate data, so that every interaction between classes take place via the properties and methods, rather than by direct access to data. A good class design has a minimum of Public variables.
+Property and method names
+We have already emphasized the importance of meaningful method and property names. When a method has the single role of obtaining some value, say the value of a salary, it is convention to call it getSalary. Similarly, if a method is to be provided to change the value of this same variable, then the conventional name is setSalary.
+Field order
+Fields are the variables, properties and methods declared within a class. What order should they appear in? There are both Public and Private ﬁelds to consider. The usual convention is to write them in the following order:
+1.	instance variables (Public and Private);
+2.	Public methods;
+3.	properties;
+4.	Private methods.
+l Nested Ifs
+Nesting means writing a statement within another statement, for example an If statement within an If statement or a While loop within a For loop (considered later). Sometimes a nested program is simple and clear. But generally, a high degree of nesting is considered to be bad style, and best avoided. Nesting is always avoidable by rewriting the program. Consider the problem of ﬁnding the largest of three numbers. Here is an initial program that uses nesting:
+Dim a, b, c As Integer
+Dim largest As Integer
+If a > b Then
+	If a > c Then
+		largest = a
+	Else
+		largest = c
+	End If
+Else
+	If b > c Then
+		largest = b
+	Else
+		largest = c
+	End If
+End If
+This is certainly a complicated-looking piece of program, and some people might have a little trouble understanding it. Arguably the complexity arises from the nesting of the If statements.
+An alternative piece of program that avoids the nesting, but increases the complexity of the conditions, is:
+If a >= b And a >= c Then
+	largest = a
+End If
+If b >= a And b >= c Then
+	largest = b
+End If
+If c >= a And c >= b Then
+	largest = c
+End If
+which may be clearer to some people. But the best solution is probably the following, which uses ElseIf:
+If a >= b And a >= c Then
+	largest = a
+ElseIf b >= a And b >= c Then
+	largest = b
+Else
+	largest = c
+End If
+This is both more concise and shows the symmetry present in the problem.
+We have examined three solutions to the same problem. The moral is that there 
+is often more than one solution to a problem and each has its own strengths and 
+weaknesses.
+It can be difﬁcult to read and understand nested programs. This example shows how a program that involves nested Ifs can be converted into a program without nesting and, in general, any nested program can be converted in a similar way. But nested If statements are not always bad, and there are occasions where nesting simply and clearly describes what needs to be done.
+l Nested loops
+We now look at nesting loops. Suppose we are writing a program that displays a pattern on the screen as in Figure 21.1, which is a crude graphic of a block of ﬂats (apartments in North America).
+The piece of program could look like this:
+Private Sub DrawFlats(ByVal floors As Integer, _
+				ByVal flats As Integer)
+	Dim xCoord, yCoord As Integer
+	Dim floor, flat As Integer
+	Dim paper As Graphics
+	paper = PictureBox1.CreateGraphics()
+	Dim myPen As Pen = New Pen(Color.Black)
+	yCoord = 10
+	For floor = 0 To floors
+		xCoord = 10
+		For flat = 0 To flats
+			paper.DrawRectangle(myPen, xCoord, yCoord, 10, 10)
+			xCoord = xCoord + 15
+		Next
+	yCoord = yCoord + 15
+	Next
+End Sub
+in which one loop is nested within the other. This is not a particularly complex piece of code, but we can simplify it using another method:
+Private Sub DrawFlats2(ByVal floors As Integer, _
+			ByVal flats As Integer)	
+	Dim yCoord As Integer
+	Dim floor As Integer
+	yCoord = 10
+	For floor = 0 To floors
+		DrawFloor(yCoord, flats)
+		yCoord = yCoord + 15
+	Next
+End Sub
+Private Sub DrawFloor(ByVal yCoord As Integer, _
+			ByVal flats As Integer)
+	Dim xCoord As Integer = 10
+	Dim flat As Integer
+	Dim paper As Graphics
+	paper = PictureBox1.CreateGraphics()
+	Dim myPen As Pen = New Pen(Color.Black)
+	For flat = 0 To flats
+		paper.DrawRectangle(myPen, xCoord, yCoord, 10, 10)
+		xCoord = xCoord + 15
+	Next
+End Sub
+By using an additional method we have eliminated the nesting. We have also expressed explicitly in the coding the fact that the block of ﬂats consists of a number of ﬂoors. 
+We have disentangled two problems into separate parts; this is sometimes known as problem decomposition. We have clariﬁed the requirement that there is a change in the y-coordinate for each ﬂoor of the block. It is always possible to eliminate nested loops in this manner, and sometimes this results in a simpliﬁcation of the program.
+Research studies have shown that we humans ﬁnd it difﬁcult to understand pro-
+grams that use nesting. One researcher has summed this up by saying ‘Nesting is for 
+the birds’. But nesting is not always bad. Take, for example, the coding to initialize a two-dimensional array:
+Dim table(9, 9) As Integer
+Dim row, col As Integer
+For row = 0 To 9
+	For col = 0 To 9
+		table(row, col) = 0
+	Next
+Next
+which is clear even with nesting.
+l Complex conditions
+Complexity in an If, For, While or Do statement can arise when the condition being tested involves one or more And and Ors. A complex condition can make a program very difﬁcult to understand, debug and get right. As an example, we will look at a program that searches an array of numbers to ﬁnd a desired number:
+Const maxIndex As Integer = 99
+Dim table(maxIndex) As Integer
+Dim wanted As Integer
+Dim index As Integer
+wanted = CInt(InputTextBox.Text)
+index = 0
+While index < maxIndex And table(index) <> wanted
+	index = index + 1
+End While
+If table(index) = wanted Then
+	ResultTextBox.Text = “found”
+Else
+	ResultTextBox.Text = “not found”
+End If
+The problem with this program is that the condition in the While is complex. Even for an experienced programmer it can be difﬁcult to check what has been written and 
+to convince yourself that it is correct. There is an alternative; we will use a ﬂag. It is 
+simply an Integer variable, but its value at any time records the status of the search. There are three possible states that the search can be in.
+l	The program is still searching; the item is not yet found. This is also the initial state of the search. The ﬂag has the value 0.
+l	The item has been found. The value is 1.
+l	The search has been completed but without ﬁnding the item. The value is 2.
+Using this ﬂag, called state, the program becomes:
+Const maxIndex As Integer = 99
+Dim table(maxIndex) As Integer
+Dim wanted As Integer
+Dim index As Integer
+Dim state As Integer
+Const stillSearching As Integer = 0
+Const found As Integer = 1
+Const notFound As Integer = 2
+wanted = CInt(InputTextBox.Text)
+index = 0
+state = stillSearching
+While state = stillSearching
+	If wanted = table (index) Then
+		state = found
+	ElseIf index = maxIndex Then
+		state = notFound
+	End If
+	index = index + 1
+End While
+If state = found Then
+	ResultTextBox.Text = “found”
+Else
+	ResultTextBox.Text = “not found”
+End If
+What has been accomplished is that the various tests have been disentangled. The condition in the While loop is clear and simple. The other tests are separate and simple. The program overall is perhaps simpler. Yet another way to write a search program is given in Chapter 14 on one-dimensional arrays.
+The moral is that it is often possible to write a piece of program in different ways and some solutions are simpler and clearer than others. Sometimes it is possible to avoid complexity in a condition by rewriting the program fragment with the use of a ﬂag.
+l Documentation
+Documentation is the bugbear of the programmer – until, of course, you yourself are asked to sort out someone else’s program! Commercial organizations usually try to encourage programmers to document their programs well. They tell the old and probably ﬁctitious story about the programmer who had a program 95% complete, did no documentation and then got run over by a bus. The colleagues who remained allegedly had a terrible job trying to continue work on the program.
+Program documentation typically consists of the following ingredients:
+l	the program speciﬁcation;
+l	screen dumps;
+l	the source code, including appropriate comments;
+l	design information, for example, class diagrams;
+l	the test schedule;
+l	the test results;
+l	the modiﬁcation history;
+l	the user manual.
+If you ever get asked to take over someone’s program, this is what you will need – but don’t expect to get it!
+Programmers generally ﬁnd creating documentation a boring chore and tend to skimp on it. They generally leave it to the end of the project, when there is little time available. No wonder it is often not done or done poorly.
+The only way to ease the pain is to do the documentation as you go along, mixing it in with the more interesting tasks of programming.
+Programming pitfalls
+Check whether there are any standards used in your organization before you start to code. You might be required to follow them. If you do want to stick to a plan for laying out the program, it’s often better to do it from the start, rather than typing the program in roughly and changing it later.
+Summary
+l	Program style is important to promote readability for debugging and 
+maintenance.
+l	Guidelines for good program layout embrace good names, indentation, blank lines and comments.
+l	VB has a useful facility for making appropriate data items constant.
+l	Classes should have a clear cohesive purpose.
+l	Nested Ifs, loops and complex conditions should be used judiciously.
+l	Good documentation is always worthy.
+exercises
+21.1	In a program to play a game of cards, the suit of a card is encoded as an integer 
+(1 to 4). Consider a method to convert this integer into the appropriate string – ‘hearts’, ‘clubs’, etc. Write the method four ways:
+	(a)	using nested If statements
+	(b) using distinct If statements
+	(c)	using ElseIf
+	(d)	using Select Case
+	Which solution is best and why?
+21.2	Look at as many programs as you can (including your own) and review their styles. Are they good or bad? Why?
+21.3	Discuss the issue of guidelines with colleagues or friends. Does style matter? If so what constitutes good style?
+21.4	Devise a set of style guidelines for VB programs.
+21.5	(Optional) Use your style guidelines for evermore.
+

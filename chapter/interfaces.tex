@@ -1,0 +1,121 @@
+\chapter{Interfaces}
+
+23
+Interfaces
+This chapter explains:
+l	how to use interfaces in describing the structure of a program;
+l	how to use interfaces in ensuring the interoperability of the classes within a program;
+l	a comparison of interfaces with abstract classes.
+l Introduction
+VB provides a notation for describing the outward appearance of a class, called an 
+interface. An interface is just like the description of a class but with the bodies of 
+the properties and methods omitted. Do not confuse this use of the word interface 
+with the same word in the term graphical user interface (GUI). Two uses for interfaces 
+are:
+l	in design;
+l	to promote interoperability.
+l Interfaces for design
+The importance of design during the initial planning of a large program is often emphas-
+ized. This involves designing all the classes for the program. A speciﬁcation of the class names, their properties and methods, written in English, is one way to document such a design. But it is also possible to write this description in VB. For example, the interface for the class Balloon is:
+Public Interface BalloonInterface
+	Sub ChangeSize(ByVal newDiameter As Integer)
+	Property XCoord() As Integer
+	Sub Display(ByVal drawArea As Graphics)
+End Interface
+Notice that the word Class is omitted in an interface description. Notice also that methods and properties are not declared as Public (or anything else).
+Only the property and method names and their parameters are described in an interface, while the bodies of the properties and methods are omitted. An interface describes 
+a class, but does not say how the properties, methods and the data items are implemented. It thus describes only the services provided by the class – it represents the 
+outward appearance of a class as seen by users of the class (or an object instantiated 
+from it). By implication it also says what the person who implements the class must 
+provide.
+An interface can be compiled along with any other classes, but clearly cannot be 
+executed. However, someone who is planning to use a class can compile the program along with the interface and thereby check that it is being used correctly. Anyone who has written a VB program knows that the compiler is extremely vigilant in ﬁnding errors that otherwise might cause mischievous problems when the program executes. So any checking that can be done at compile-time is most worthwhile.
+A person who is implementing an interface can specify in the heading of the class 
+that a particular interface is being implemented. Earlier, as an example, we wrote an interface describing the interface to a class Balloon. Now we write the class Balloon itself:
+Public Class Balloon
+	Implements BalloonInterface
+	Private diameter, x, y As Integer
+	Public Sub ChangeSize(ByVal newDiameter As Integer) _
+		Implements BalloonInterface.ChangeSize
+		diameter = newDiameter
+	End Sub
+	Public Property XCoord() As Integer _
+		Implements BalloonInterface.XCoord
+		Get
+			Return x
+		End Get
+		Set(ByVal value As Integer)
+			x = value
+		End Set
+	End Property
+	Public Sub Display(ByVal drawArea As Graphics) _
+		Implements BalloonInterface.Display
+		Dim myPen As Pen = New Pen(Color.Black)
+		drawArea.DrawEllipse(myPen, x, y, diameter, diameter)
+	End Sub
+End Class
+Notice that the class as a whole is described as implementing the BalloonInterface interface. Then each and every method and property is described as implementing the corresponding item from the interface. The compiler will then check that this class has been implemented to comply with the interface declaration – that is, it provides the properties and methods ChangeSize, XCoord and Display, together with their appropriate parameters. The rule is that if you implement an interface, you have to implement every property and method described in the interface.
+Interfaces can also be used to describe an inheritance structure. For example, suppose we wanted to describe an interface for a ColoredBalloon type that is a subclass of the interface Balloon described above. We can write:
+Public Interface ColoredBalloonInterface
+	Inherits BalloonInterface
+	Sub SetColor(ByVal c As Color)
+End Interface
+which inherits the interface BalloonInterface and states that the interface ColoredBalloonInterface has an additional method to set the colour of an object. We could similarly describe a whole tree structure of classes as interfaces, describing purely their outward appearance and their subclass–superclass relationships.
+In summary, interfaces can be used to describe:
+l	the classes in a program;
+l	the inheritance structure in a program, the ‘is-a’ relationships.
+What interfaces cannot describe are:
+l	the implementations of methods and properties (this is the whole point of interfaces);
+l	which classes use which other classes, the ‘has-a’ relationships (this needs some other notation).
+To use interfaces in design, write the interfaces for all the classes in the program before beginning the coding of the implementation of the classes.
+Interfaces become particularly useful in medium-sized and large programs that make use of more than a few classes. In large programs that involve teams of programmers, their use is almost vital as a way of facilitating communication amongst the team 
+members. Interfaces complement class diagrams as the documentation of a program’s design.
+l Interfaces and interoperability
+Household appliances such as toasters and electric kettles come with a power cord 
+with a plug on the end of it. The design of the plug is standard (throughout a country) and ensures that an appliance can be used anywhere (within the country). Thus the adoption of a common interface ensures interoperability. In VB, interfaces can be used in a similar fashion to ensure that objects exhibit a common interface. When such an object is passed around a program we can be sure that it supports all the properties and methods speciﬁed by the interface description.
+As an example, we declare an interface named Displayable. Any class complying with this interface must include a method named Display which displays the object. The interface declaration is:
+Public Interface Displayable
+	Sub Display(ByVal drawArea As Graphics)
+End Interface
+Now we write a new class, named Square, which represents square graphical objects. We say in the header of the class that it Implements Displayable. We include within the body of the class the method Display:
+Public Class Square
+	Implements Displayable
+	Private x, y, size As Integer
+	Public Sub Display(ByVal drawArea As Graphics) _
+		Implements Displayable.Display
+		Dim myPen As Pen = New Pen(Color.Black)
+		drawArea.DrawRectangle(myPen, x, y, size, size)
+	End Sub
+	’ other methods and properties of the class Square
+End Class
+As the heading states, this class (and any object created from it) conforms to the Displayable interface. It means that any object of this class can be passed around a 
+program and, when necessary, we are conﬁdent that it can be displayed by calling its method Display.
+Finally we mention that just as a TV has interfaces both to a power source and to a signal source, so in VB we can specify that a class implements a number of interfaces. So while a class can only inherit from one other class, it can implement any number of interfaces.
+Programming principles
+Interfaces and abstract classes are similar. Abstract classes are described in Chapter 11 on inheritance. The purpose of an abstract class is to describe as a superclass the common features of a group of classes, and is introduced by the keyword MustInherit. The differences between abstract classes and interfaces are as follows:
+1.	An abstract class often provides an implementation of some of the methods 
+and properties. In contrast, an interface never describes any implementation.
+2.	A class can implement more than one interface, but only inherit from one abstract class.
+3.	An interface is used at compile-time to perform checking. By contrast, an abstract class implies inheritance, which involves linking the appropriate method or property at run-time.
+4.	An abstract class implies that its MustOverride methods and properties will be ﬂeshed out by classes that extend it. Inheritance is expected. But an interface simply speciﬁes the skeleton for a class, with no implication that it will be used 
+for inheritance.
+Programming pitfalls
+Remember that:
+l	A class can only inherit from one other class, including an abstract class.
+l	A class can implement any number of interfaces.
+New language elements
+l	Interface – the description of the external interface to a class which may not yet be written.
+l	Implements – used in the header of a class to specify that the class, property or method implements a named interface.
+Summary
+l	Interfaces are used to describe the services provided by a class.
+l	Interfaces are useful for describing the structure of a program. This description can be checked by the VB compiler.
+l	Interfaces can be used to ensure that a class conforms to a particular interface. This supports interoperability.
+exercises
+Interfaces as design descriptions
+23.1	Write an interface to describe selected properties and methods of the TextBox class from the toolbox.
+23.2	Write an interface to describe a class that represents bank accounts. The class 
+is called Account. It has methods Deposit and Withdraw, and a property CurrentBalance. Decide on suitable parameters for the methods.
+23.3	Write interfaces to describe the structure of a program that consists of a number of classes, such as the game program described in Chapter 20 on design.
+Interfaces for interoperability
+23.4	Write a class named Circle that describes circle objects and conforms to the Displayable interface given above.
+

@@ -1,0 +1,161 @@
+\chapter{The background to Visual Basic}                                                                                                                                                                                                                  
+	\paragraph{This chapter explains:}
+		\begin{itemize}
+			\item	how and why Visual Basic came into being;
+			\item	what is novel about it;
+			\item	about Microsoft’s .NET framework;
+			\item	about the introductory concepts of programming.
+		\end{itemize}
+	\section{The history of Visual Basic}
+		A computer program is a series of instructions that are obeyed by a computer. The point of the instructions is to carry out a task – e.g. play a game, send an e-mail, etc. The instructions are written in a particular style: they must conform to the rules of the programming language we choose. There are hundreds of programming languages, but only a few have made an impact and become widely used.
+
+		In 1963 Kemeney and Kurtz introduced a language called BASIC. In a rather contrived way, this was said to stand for Beginner’s All-purpose Symbolic Instruction Code, but the main point was that it was designed for beginners, not for programming experts.
+
+		Around 1975, the micro revolution happened, when the earlier invention of the microchip made it possible for an individual to afford a ‘personal’ computer. But the early ones were still hard to program – you had to be an expert. Then came the breakthrough: Bill Gates and Paul Allen produced a version of BASIC for the personal computer. They then went on to form Microsoft.
+
+		Of course, Microsoft’s major product turned out to be their Windows operating system, supplied on most computers. Unfortunately, it was very difficult to write programs to run under Windows, until Microsoft introduced an updated BASIC, named Visual Basic, in 1991. It became possible for inexperienced programmers to write programs for Windows which manipulated buttons, scroll bars, etc. Versions of Visual Basic have progressed until version 6, which (at the time of writing) is still in use. It is one of the most popular languages in the world.
+		
+	\section{The Microsoft .NET framework}
+		In 2002, Microsoft went beyond bringing out slightly enhanced versions of their software: there was no Visual Basic 7 following on from version 6. Instead, they introduced a major new product, named the .NET framework. This is pronounced ‘dot net’.
+		
+		Since the inception of the product, minor changes were made. This book uses the 2017 edition.
+		The main features are:
+		\begin{itemize}
+			\item It comes with the programming languages Visual Basic .NET, C\# (‘C sharp’), and C++ (‘C plus-plus’).
+			\item	It has facilities which help programmers to create interactive websites, such as those used for e-commerce. Microsoft sees the Internet as crucial, hence the name .NET.
+			\item	There is the possibility of .NET being available for other operating systems, not only Microsoft Windows.
+			\item	It lets us build software from components (objects) that can be spread over a network.
+		\end{itemize}
+				
+		For our purposes, the main point is that it is a new version of Visual Basic. This is referred to as Visual Basic .NET, and we will refer to it as simply VB. It is a major change from VB6, and is fully in line with the modern programming trend of \emph{object-oriented programming} (OOP), which is a major part of this book.
+
+		What of the other languages? Yes, you can use C\# and C++ to write software, and many experienced programmers will choose this path. However, VB is considerably simpler for beginners, while still having powerful facilities.
+
+So, when you learn VB you will learn not only the detail of the language but also the technique of OOP.
+
+	\section{What is a program?}
+		In this section we try to give the reader some impression of what a program is. One way to understand is by using analogies with recipes, musical scores and knitting patterns. Even the instructions on a bottle of hair shampoo are a simple program:
+		\begin{lstlisting}
+wet hair
+apply shampoo
+massage shampoo into hair
+rinse
+		\end{lstlisting}
+		This program is a list of instructions for a human being, but it does demonstrate one important aspect of a computer program: a program is a sequence of instructions that is obeyed, starting at the first instruction and going on from one to the next until the sequence is complete. A recipe, musical score and a knitting pattern are similar; they constitute a list of instructions that are obeyed in sequence. In the case of a knitting pattern, knitting machines exist which are fed with a program of instructions, which they then carry out (or \emph{execute}). This is what a computer is – it is a machine that automatically obeys a sequence of instructions, a \emph{program}. (In fact, if we make an error in the instructions, the computer is likely to do the wrong task.) The set of instructions that are available for a computer to obey typically include:
+		\begin{itemize}
+			\item	input a number;
+			\item	input some characters (letters and digits);
+			\item	output some characters;
+			\item	do a calculation;
+			\item	output a number;
+			\item	output some graphical image to the screen;
+			\item	respond to a button on the screen being clicked by the mouse.
+		\end{itemize}
+		The job of programming is one of selecting from this list those instructions that will carry out the required task. These instructions are written in a specialized language called a \emph{programming language}. VB is one of many such languages. Learning to program means learning about the facilities of the programming language and how to combine them so as to do something you want. The example of musical scores illustrates another aspect of programs. It is common in music to repeat sections, for example a chorus section. Musical notation saves the composer duplicating those parts of the score that are repeated and, instead, provides a notation specifying that a section of music is repeated. The same is true in a program; it is often the case that some action has to be repeated: for example, in a word-processing program, searching through a passage of text for the occurrence of a word. Repetition (or iteration) is common in programs, and VB has special instructions to accomplish this.
+		
+		Recipes sometimes say something like: ‘if you haven’t got fresh peas, use frozen’. This illustrates another aspect of programs – they often carry out a test and then do one of two things depending on the result of the test. This is called selection and, as with repetition, VB has special facilities to accomplish it.
+		
+		If you have ever used a recipe to prepare a meal, you may well have got to a particular step in the recipe only to find that you have to refer to another recipe. For example, you might have to turn to another page to find out how to cook rice, before combining it with the rest of the meal: the rice preparation has been separated out as a sub-task. This way of writing instructions has an important analogue in programming, called methods in VB and other object-oriented languages. Methods are used in all programming languages, but sometimes go under other names, such as functions, procedures, subroutines or sub-programs.
+
+		Methods are sub-tasks, and are so called because they are a method for doing something. Using methods promotes simplicity where there might otherwise be complexity.
+
+		Now consider cooking a curry. A few years ago, the recipe would suggest that you buy fresh spices, grind them, and fry them. Nowadays though, you can buy ready-made sauces. Our task has become simpler. The analogy with programming is that the task becomes easier if we can select from a set of ready-made \emph{objects} such as buttons, scroll bars, and databases. VB comes with a large set of objects that we can incorporate in our program, rather than creating the whole thing from scratch.
+
+		To sum up, a program is a list of instructions that can be obeyed automatically by a computer. A program consists of combinations of:
+		\begin{itemize}
+			\item	sequences;
+			\item	repetitions;
+			\item	selections;
+			\item	methods;
+			\item	ready-made objects;
+			\item	objects you write yourself.
+		\end{itemize}
+		All modern programming languages share these features.
+
+		\begin{stqb}*
+			\begin{STQ}
+				\item Here are some instructions for calculating an employee’s pay:
+					\begin{lstlisting}
+obtain the number of hours worked
+calculate pay
+print pay slip
+subtract deductions for illness
+					\end{lstlisting}
+					Is there a major error?
+				\item Take the instruction:
+					\begin{lstlisting}
+massage shampoo into hair
+					\end{lstlisting}
+					and express it in a more detailed way, incorporating the concept of repetition.
+				\item Here are some instructions displayed on a roller coaster ride:
+					\begin{lstlisting}
+Only take the ride if you are over 8 or younger than 70!
+					\end{lstlisting}
+					Is there a problem with the notice? How would you rewrite it to improve it?
+			\end{STQ}
+		\end{stqb}
+
+	\section{Programming principles}
+		\begin{itemize}
+			\item Programs consist of instructions combined with the concepts of sequence, selection, repetition and sub-tasks.
+			\item The programming task becomes simpler if we can make use of ready-made components.
+		\end{itemize}
+
+	\section{Programming pitfalls}
+		Human error can creep into programs – such as placing instructions in the wrong order.
+		
+	\section{Summary}
+		\begin{itemize}
+			\item VB is derived from BASIC, which was designed to be easy for beginners.
+			\item A program is a list of instructions that are obeyed automatically by a computer.
+			\item Object-oriented programming (OOP) is the main trend in current programming, and VB fully supports it.
+		\end{itemize}
+
+	\section{Exercises}
+		\begin{enumChapter}
+		\item	This question concerns the steps that a student goes through to wake up and get to college. Here is a suggestion for the first few steps:
+			\begin{lstlisting}
+wake up
+dress
+eat breakfast
+brush teeth
+...
+			\end{lstlisting}
+			\begin{itemize}
+				\item	Complete the steps. Note that there is no ideal answer – the steps will vary between individuals.
+				\item	The ‘brush teeth’ step contains repetition – we do it again and again. Identify another step that contains repetition.
+				\item	Identify a step that contains a selection.
+				\item	Take one of the steps, and break it down into smaller steps.
+			\end{itemize}
+		\item	You are provided with a huge pile of paper containing 10 000 numbers, in no particular order. Write down the process that you would go through to find the largest number. Ensure that your process is clear and unambiguous. Identify any selection and repetition in your process.
+		\item	For the game of Tic Tac Toe (noughts and crosses), try to write down a set of precise instructions which enables a player to win. If this is not possible, try to ensure that a player does not lose.
+	\end{enumChapter}
+
+		\begin{stab}
+			\begin{enumChapter}
+				\item The major error is that the deductions part comes too late. It should precede the printing.
+					\begin{lstlisting}
+obtain the number of hours worked
+calculate pay
+print pay slip
+subtract deductions for illness
+					\end{lstlisting}
+				\item We might say:
+					\begin{lstlisting}
+keep massaging your hair until it is washed.
+					\end{lstlisting}
+					or
+					\begin{lstlisting}
+As long as your hair is not washed, keep massaging.
+					\end{lstlisting}
+				\item The problem is with the word ‘or’. Someone who is 73 is also over 8, and could therefore ride.
+
+	  We could replace ‘or’ with ‘and’ to make it technically correct, but the notice might still be misunderstood. We might also put:
+					\begin{lstlisting}
+only take this ride if you are between 8 and 70
+					\end{lstlisting}
+					but be prepared to modify the notice again when hordes of 8- and 70-year-olds ask if they can ride!
+			\end{enumChapter}
+		\end{stab}
+
+

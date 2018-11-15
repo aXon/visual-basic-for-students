@@ -1,0 +1,277 @@
+\chapter{Console programs}
+
+19
+Console programs
+This chapter explains:
+l	how to create a console application;
+l	console input–output;
+l	The processing of command-line arguments;
+l	running programs from the command prompt;
+l	scripting with batch ﬁles.
+l Introduction
+The user interface has changed enormously in power (and complexity) since the early days of computers. In the 1960s, a common device for interaction was the teletype (or operator’s console) which was basically an electrical typewriter with a roll of paper for displaying text. All you could do was to type a line of text, which the program could interpret as a command or as data.
+It might seem strange in this time of mice, high-resolution screens and voice input, that a style of interaction involving lines of text can be useful, but this is the case! Some types of program do not have a major interactive element. Here are some examples:
+l	A program which calculates the amount of free space on a disk drive. All the user needs to do is state the drive. Such a program might also be run automatically, perhaps when ﬁles are deleted.
+l	A program which prints a list of company employees. This list does not change very often. All we need to do is run the program.
+l	A program which is one part of a larger task, running without human intervention.
+Such an approach is called ‘scripting’ or ‘batch’ programming. For example, when you boot up an operating system, a script (a ﬁle containing instructions which execute programs) is run.
+l A ﬁrst console program
+We shall create a small program which asks you for your name, then displays it. The steps to create a project are almost identical to creating a GUI program, except that we select ‘Console Application’ for the project type. Name the project Hello. The IDE will then display the following code:
+Module Module1
+	Sub Main()
+	End Sub
+End Module
+We then modify the program so that it looks like:
+Module Module1
+	Sub Main()
+		Dim name As String
+		Console.WriteLine(“Please enter your name:”)
+		name = Console.ReadLine()
+		Console.WriteLine(“Hi there “ & name)
+		Dim wait As String = Console.ReadLine()
+	End Sub
+End Module
+Finally, use Save As, choosing the name Hello.vb. Run the program, and enter your name. Note the result, then press the Enter key to end the program. Figure 19.1 shows a screenshot of the program. Here is an explanation of the program.
+l	The program is contained within a module, which is similar in nature to a class, but without any inheritance possibilities.
+l	When the program is executed, the method named Main is called automatically. It starts things off.
+l	The Console class is imported automatically, and provides similar methods to those we used to access ﬁles. We have:
+– WriteLine, which writes a string to the screen, followed by an end-of-line. Write is similar, but does not add the end-of-line.
+–	ReadLine inputs a complete line of text from the keyboard, as a string. The end-of-line marker is not stored in the string.
+l	When console applications terminate, their window closes automatically. 
+As you will see, this is what we require in many cases, but for our ﬁrst program it
+is inconvenient, because we can’t see the output. To prevent the window closing, we have inserted an extra line:
+Dim wait As String = Console.ReadLine()
+	We placed this immediately above the End Sub. Its effect is to wait for the user to enter another line of text – we can simply enter a blank line by pressing the enter key. You might use this line in the early stages of creating and debugging a console application, then remove it in the ﬁnished version.
+l	This particular project was named Hello, and we named the VB ﬁle after it. The project name need not match the VB ﬁle name, but it was suitable in this case. 
+The IDE will create the executable version in the ﬁle:
+\Hello\bin\Debug\Hello.exe
+	i.e. within the bin\Debug directory of our project. The name bin is short for ‘binary’.
+	  The name of the executable ﬁle Hello.exe was derived from the name of the VB ﬁle.
+l The command prompt: cd and dir
+You are familiar with clicking on folder icons to navigate through folders, but when running console applications, it is sometimes necessary to use keyboard commands for the same tasks. Instructions are entered at the command prompt, which can be accessed in several ways:
+l	On some Windows systems, use Windows Explorer to browse to the required folder. Right-click on the folder and select Open Command Window Here.
+l	On other Windows systems, you might have to go via the Start menu, working through: Start | All Programs | Accessories | Command Prompt.
+(Though details vary slightly depending on your version of Windows. Sometimes you do not need to look as far as the Accessories menu. On some versions of Windows, it might be described as MS-DOS.)
+When you run the command prompt, a black window appears where you can type commands. To navigate through directories, we use the dir (directory) and the cd (change directory) commands. They have lots of options, but we will present the minimum you need. Note that these commands use the older terminology of ‘directory’ rather than ‘folder’. They mean the same thing.
+l The dir command
+When you run the command prompt, a line is shown, of the form:
+C:\TEMP>
+This shows that you are on the C: drive, in the directory TEMP. Typing dir shows us the names of all the directories and ﬁles in the current directory, as in Figure 19.2. Dir-
+ectories are indicated by DIR in angle brackets. To restrict the list to directories only, type:
+dir /ad
+The command is followed by a space, and capitals or lower-case letters can be used. This command is useful to remind you about directory names as you navigate.
+l The cd command
+This command is used to move between directories. Here are some examples. Note that .. is used to stand for the directory above the current one.
+cd mydir	change to the mydir sub-directory
+cd ..	move up a level
+cd ..\data	move up, then into the data directory
+Note that the prompt changes. Use this to check that your command worked properly. Finally, to move to another drive, we type its letter, in the form:
+d:	move to the d: drive
+
+self-test question
+19.1	Find out how to run the command prompt window on your computer. Experiment with the dir and cd commands. Navigate to a VB project directory, and ﬁnd the exe ﬁle within the bin\Debug directory.
+l Ways of running programs
+There are a number of ways to initiate the running of VB programs under Windows. Here are some of them:
+l	You can run a program from the IDE. This is used when creating and debugging programs.
+l	You can run a program by double-clicking on its name in Windows Explorer. For example, the above Hello program was saved as Hello.vb, and it can also be run by looking in the bin\Debug folder of its project folder and double-clicking on Hello.exe. Remember that its window will close automatically.
+l	You can run a program by typing its name at the command prompt. For example, to run our Hello program, we open the command prompt window in the project’s bin\Debug directory, and then enter the name of the exe ﬁle, as in:
+Hello.exe
+	Figure 19.3 shows the command prompt window, after the program has been run. Note that the window does not close, and we could type another command.
+If you want to run the program while you are in another directory, you can enter the full path to the exe ﬁle. For example, if your project directory was stored at the top level of the C: drive, you would type:
+c:\Hello\bin\Debug\Hello.exe
+l	You can also run a program in a ‘batch’ manner. Here is an example, which you can run by following these steps:
+–	Use a text editor, such as NotePad in the Accessories folder, to create a ﬁle named hi.bat, and put these two lines of text in it:
+Hello.exe
+Hello.exe
+	Save the ﬁle in the bin\Debug directory of your project.
+–	Run the bat ﬁle by double-clicking on hi.bat in Windows Explorer. Observe that your name is requested twice.
+	As you have just seen, a batch ﬁle contains instructions to run a series of programs. Here we chose to run the same program twice. We shall discuss this approach in more detail later.
+l Classes in console applications
+For small programs, you might choose to use a few methods, as in:
+Module Module1
+	Sub Main()
+		MethodA()
+	End Sub
+	Private Sub MethodA()
+		. . . code for method
+	End Sub
+End Module
+For larger programs, you might wish to incorporate library classes. This can be done by placing the appropriate Imports at the top of the ﬁle.
+You might also wish to create new classes. As with GUI programs, you can put the classes in separate ﬁles, or in the same ﬁle.
+l Command-line arguments
+When we run console applications, we often need to supply starting details for items such as ﬁle names to use. The program could use ReadLine to input such items – and this is a good approach in some cases. However, later we will see programs which operate without user interaction but which still need some form of initialization. This is where command-line arguments come into use.
+Here is an example: we will write a program called Pick which searches through a speciﬁed ﬁle, picking out and displaying every line containing a speciﬁed string. Here is the code:
+Imports System.IO
+Module Module1
+	Sub Main(ByVal args() As String)
+		Dim line As String
+		Dim fileName As String = args(0)
+		Dim wanted As String = args(1)
+		Dim inputStream As StreamReader = _
+			File.OpenText(fileName)
+		line = inputStream.ReadLine()
+		While line <> Nothing
+			If line.IndexOf(wanted) >= 0 Then
+				Console.WriteLine(line)
+			End If
+			line = inputStream.ReadLine()
+		End While
+		inputStream.Close()
+	End Sub
+End Module
+The program reads each line in turn from a speciﬁed ﬁle (as we explained in Chapter 18), and uses the IndexOf method from the String class to see if the required string exists anywhere within the line. If this is the case, we display the line on the screen.
+Note that the program needs to get values for the strings fileName and wanted. Eventually we will use these in the conventional way via the command prompt window, but for debugging and testing, the IDE allows us to set up these values. Here is 
+how:
+1.	In the IDE, create a Console Application project named Pick, and enter the above VB code. Save the code in the ﬁle Pick.vb.
+2.	Now we will set up the command-line arguments. From the menus, choose Project | Pick Properties . . . , then click on Debug.
+3.	In the Command line arguments area, enter the following:
+demo.txt “lines”
+	then click OK. The strings for the arguments are separated by a space or spaces. You can use quotes around an argument if you wish, and this is essential if an argument itself contains spaces. Incidentally, if the ﬁle to be examined is stored elsewhere, you can use its full path when you specify the program arguments.
+4.	Create a ﬁle to work with, called demo.txt, containing these lines:
+These lines are
+a test of the Pick program.
+It finds and displays lines
+containing a specified sub-string.
+	To follow this example exactly, ensure that the ﬁle is stored in the bin\Debug directory within the Pick project directory.
+When you run the program, its output will appear in a black window, and the window will close. To see the output, place the following line just above the End Sub, as we did in the Hello program:
+Dim wait As String = Console.ReadLine()
+Run the program again. You will see two lines shown below, each of which contains the string lines:
+These lines are
+It finds and displays lines
+Press the ‘enter’ key to end the program.
+When we run a console application, our Sub Main method is called by the run-time system. We do not call it ourselves. Any command-line arguments that we provide are passed into the method as an array of strings, which we chose to name as args. Before being placed in this array, some processing is done for us:
+l	The arguments are split up. A space or spaces separates one from another.
+l	Any spaces within quotes are not treated as a separator. For example, in our 
+Pick program, we may have ﬁle paths containing spaces, or we may wish to ﬁnd 
+a string containing spaces. In these cases, we must set up the arguments with quotes surrounding them. The quotes are removed from the argument before it is passed to Sub Main.
+l	The ﬁrst argument is placed in position 0 of our array, not in position 1.
+We can make use of the UBound function to ﬁnd out how many arguments the user
+supplied and reject any errors.
+
+self-test questions
+19.2	Amend the Pick program so that it checks the number of supplied arguments. If there are not two arguments, the program should display an error message and terminate.
+19.3	Modify the Pick program so that lower-case and upper-case versions of the required string are found.
+l Scripting and output redirection
+Here we will examine some of the facilities that Windows systems offer for scripting, and actually do some scripting with our Pick program. Scripting covers a variety of techniques. Here we will regard a script as a ﬁle containing instructions for running 
+a series of programs. They are known as batch ﬁles, and have the .bat extension. Their use promotes a ‘building brick’ approach, where we create new software by connecting existing software together, rather than coding from scratch.
+Output redirection lets us control the destination of output text from a program. Recall our previous programs. We used Console.WriteLine to send text to the screen. However, sometimes we wish to place the results in a ﬁle. Here is an example: we need to place the output from Pick into a ﬁle, so we can use it elsewhere. This can be done by opening a command prompt window, then using the cd command to move into the bin\Debug directory of the Pick project. Type the following:
+Pick.exe demo.txt “lines” > results.txt
+The use of > causes the text that would have appeared on the screen to be redirected to the ﬁle results.txt in the bin\Debug directory. If this ﬁle existed already, it is overwritten. If it did not exist, it is created.
+We chose to put spaces around the > for ease of reading, though this is not essential.
+Another matter of preference is the use of capitals. The command-line software is based on MS-DOS, an early Microsoft operating system. When you type ﬁle names and paths, these get converted to upper-case internally, so the same effect is obtained from either of these lines:
+PICK.EXE DEMO.TXT “lines”
+Pick.exe demo.txt “lines”
+pick.exe demo.txt “lines”
+Here is another example: we wish to ﬁnd every line containing the word Dim in a VB program. Moreover, we wish to add these lines to the existing results.txt ﬁle from above. We type:
+Pick.exe SomeProg.vb “Dim” >> results.txt
+The >> symbol means ‘append’, and its action is very much like >, except that text is placed at the end of an existing ﬁle, rather than replacing the ﬁle.
+Input redirection is also possible, using <, but this requires a different technique for reading the data into the program. In our examples, we will always read from ﬁles rather than use input redirection.
+The beneﬁt of output redirection is that changing the destination of the data is
+simple: we don’t need to rewrite the program, or click through a ﬁle dialog. The program becomes more ﬂexible.
+
+self-test questions
+19.4	If we opened a command prompt window, moved into the bin directory of the Hello project, and typed:
+Hello.exe > temp.txt
+	what would we expect to see on the screen and in the ﬁle temp.txt?
+19.5	Here are two cases where we use Pick. The ﬁrst use is with >:
+Pick.exe testfile.txt “Visual Basic” > out.txt
+Pick.exe testfile.txt “Visual Basic” > out.txt
+	The second is with >>:
+Pick.exe testfile.txt “Visual Basic” >> out.txt
+Pick.exe testfile.txt “Visual Basic” >> out.txt
+	How does the use of > or >> affect the contents of the ﬁle out.txt?
+l Scripting and batch ﬁles
+Before the days of personal computers, punched cards were used. The programmer had to prepare a ‘batch’ of cards containing the program, and instructions on how to run the program. This concept of a sequence of instructions has its modern equivalent in the bat ﬁle. We can prepare a ﬁle containing instructions to run a number of programs; each program runs without user interaction.
+Here is an example: as part of the documentation for a large VB program (here named Big.vb), we wish to create a ﬁle containing the header of every Sub and Function method. This requires Pick to be used twice. We can do this by:
+1.	Creating a ﬁle named (for example) getsubs.bat within the bin\Debug directory of the Pick project, containing:
+Pick.exe Big.vb “Sub” > subs.txt
+Pick.exe Big.vb “Function” >> subs.txt
+2.	Executing the ﬁle getsubs.bat. This can be done in several ways, as we saw earlier. We could double-click on its name in Windows Explorer, or type its name at the command prompt. In either case, this would initiate the execution of the instructions within the ﬁle.
+The ﬁrst use of Pick puts all the lines containing Sub into the ﬁle subs.txt, and the second use appends any lines containing the string Function to the end of the same ﬁle. The instructions to run Pick are obeyed in top-to-bottom order, working down the batch ﬁle.
+
+self-test question
+19.6	Assume that we are given a large VB program, and we wish to ﬁnd every line which contains an If referring to a variable sum. For example, we want lines such as:
+If sum = 0 Then
+If a = sum Then
+	Prepare a batch ﬁle, which uses Pick to perform the task. Hint: use a tem-
+porary ﬁle named, for example, temp.txt.
+Programming principles
+l	Not all programs warrant a GUI.
+l	I/O redirection can make programs more ﬂexible.
+l	A batch ﬁle solution can prevent the need to write new software.
+Programming pitfalls
+l	Forgetting to put a call to ReadLine when you wish to observe output on the screen.
+l	Accessing command-line arguments from position 1 in the string array. In fact, the items begin at position 0.
+Grammar spot
+There is no new VB grammar in this chapter.
+New language elements
+l	The Console class, and the methods ReadLine, WriteLine, Write.
+l	The Module for console applications.
+New IDE facilities
+l	There is an option to create a console application.
+l	Command-line arguments can be set within the IDE, for debugging and 
+testing.
+Summary
+l	Console applications can display lines of text on the screen, and can read lines of text that the user types.
+l	They can access command-line arguments.
+l	They can be run in a variety of ways.
+l	Their output can be redirected to a ﬁle with > and >>.
+l	Batch ﬁles can contain instructions to execute programs.
+exercises
+19.1	Write a console application which asks the user to enter an integer. The doubled value should be calculated and displayed. (Assume the user will not make any input errors.)
+19.2	Write a console application which inputs a series of exam marks (one at a time) 
+from the user. The program should display the sum of all the marks. The marks are all zero or above, and a negative number is used to end the sequence of marks. 
+(Use a While loop.)
+19.3	Write a console application which displays the ﬁrst line of a ﬁle. The ﬁle name should be speciﬁed as a command-line argument. Check that the correct result appears on the screen, then run it with output redirection to place the output in 
+a ﬁle.
+19.4	Write a console application which counts the number of lines in a ﬁle, and displays the result.
+19.5	It has been suggested that the complexity of a program can be measured by counting the number of decisions and loops it has. Ideally, we wish to avoid creating programs that are unduly complex. With the aid of our Pick program and your solution from Exercise 19.4, create a batch ﬁle which adds up the number of If, While, For and Select statements in a VB ﬁle, and displays this single number.
+(Do not write any new VB code.)
+19.6	Write a console application which reads a ﬁle line-by-line and displays it on the screen. However, lines containing a particular sub-string are not to be displayed. The program has two command-line arguments: the ﬁle name, and the sub-string. The latter can be enclosed in quotes if it contains spaces. Use this program to provide a ‘collapsed’ version of a VB program by omitting every line containing eight spaces. (This will cause the inner nested code to be ignored, but the outer lines such as Imports, Class and Private to be displayed.)
+19.7	Write a console application which replaces one string with another throughout 
+a ﬁle. The program has three arguments: the ﬁle name, the string to be replaced, and the string to replace it with. Read the whole ﬁle at once into a string, and 
+make use of the Change method used in Chapter 16. Redirect the output to a 
+new ﬁle.
+19.8	Write a program named Multirep, which does multiple string replacements in a ﬁle. The arguments for the program are the input ﬁle name and the name of a ﬁle containing pairs of lines specifying from/to replacements. Here is an example. We wish to replace every Mr with Mrs and every him with her in the ﬁle data.txt. We run the program by typing:
+Multirep data.txt changes.txt > out.txt
+	The ﬁle changes.txt contains:
+Mr
+Mrs
+him
+her
+	If you know another programming language, investigate the use of Multirep in converting a VB program into that language.
+
+answers to self-test questions
+19.1	A small amount of practice is needed. Remember to look at the prompt to see the current directory, and type dir to check on the exact spelling of directory names.
+19.2	We add an If to the code, and also ensure that we don’t access any arguments before we have checked that they exist, as in:
+
+Dim line As String
+Dim fileName As String
+Dim wanted As String	
+If UBound(args) = 1 Then
+		fileName = args(0)
+		wanted = args(1)	
+		Dim inputStream As StreamReader = _
+					File.OpenText(fileName)
+		line = inputStream.ReadLine()
+		While line <> Nothing
+			If line.IndexOf(wanted) >= 0 Then
+				Console.WriteLine(line)
+			End If
+			line = inputStream.ReadLine()
+		End While
+		inputStream.Close()
+Else
+		Console.WriteLine(“Error: 2 arguments needed for Pick”)
+End If
+19.3	We convert both strings to upper-case before comparing, as in:
+If line.ToUpper().IndexOf(wanted.ToUpper()) >= 0 Then
+19.4	The text from Write and WriteLine does not appear on the screen, so we have to guess that we must enter our name. In the ﬁle, we see:
+Please enter your name: Hi there Bill
+19.5	In the > case, the ﬁle will contain only the lines with the required string in them. The second use of > overwrites any previous contents.
+In the >> case, the ﬁle contains the same lines duplicated. In addition, if the output ﬁle is not empty to start with, its original contents will still be there.
+19.6	The ﬁrst execution of Pick should pick out every If line. These lines should then be used as input to another run of Pick, which picks out the lines containing sum. Here is the code, which you might place in a ﬁle named ifsum.bat:
+Pick.exe Big.vb “If” > temp.txt
+Pick.exe temp.txt “sum” > out.txt
+	The selected lines have been redirected to a ﬁle named out.txt.
+

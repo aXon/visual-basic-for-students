@@ -1,0 +1,137 @@
+\chapter{Polymorphism}
+
+24
+Polymorphism
+This chapter explains:
+l	how to use polymorphism;
+l	when to use polymorphism.
+l Introduction
+We introduce the idea of polymorphism with a simple example. Suppose we have two classes, named Sphere and Bubble. We can create an instance of Sphere and an instance of Bubble in the usual way:
+Dim sphere1 As Sphere = New Sphere()
+Dim bubble1 As Bubble = New Bubble()
+Suppose that each class has a method named Display. Then we can display the two objects as follows:
+sphere1.Display(paper)
+bubble1.Display(paper)
+and although these two calls look very similar, in each case the appropriate version of Display is called. There are two methods with the same name (Display), but they are different. The VB system makes sure that the correct one is selected. So when Display is called for the object sphere1, it is the method deﬁned within the class Sphere that is called. When Display is called for the object bubble1, it is the method deﬁned within the class Bubble that is called. This is the essence of polymorphism.
+l Polymorphism in action
+In this chapter we use as an example a program that displays graphical – squares and 
+circles – shapes on the screen (Figure 24.1). The program uses an abstract class named Shape, which describes all the shared attributes of these shapes, including where they are on the screen. (Abstract classes were explained in Chapter 11 on inheritance.)
+Public MustInherit Class Shape
+	Protected x As Integer, y As Integer
+	Protected size As Integer = 20
+	Protected myPen As Pen = New Pen(Color.Black)
+	Public MustOverride Sub Display(ByVal drawArea As Graphics)
+End Class
+Each shape is described by its own class, a subclass of class Shape (Figure 24.2). For example:
+Public Class Circle
+	Inherits Shape
+	Sub New(ByVal initX As Integer, ByVal initY As Integer)
+		x = initX
+		y = initY
+	End Sub
+	Public Overrides Sub Display(ByVal drawArea As Graphics)
+		drawArea.DrawEllipse(myPen, x, y, size, size)
+	End Sub
+End Class
+Public Class Square
+	Inherits Shape
+	Sub New(ByVal initX As Integer, ByVal initY As Integer)
+		x = initX
+		y = initY
+	End Sub
+	Public Overrides Sub Display(ByVal drawArea As Graphics)
+		drawArea.DrawRectangle(myPen, x, y, size, size)
+	End Sub
+End Class
+Here is a program that illustrates using these classes. The program:
+1.	Creates two shapes, circle1 and square1.
+2.	Creates a list named group in order to hold objects of the class Shape. A list, explained in Chapter 13, is a convenient data structure that expands or contracts to accommodate the required data.
+3.	Adds the two objects to group.
+4.	Displays the objects using a For Each loop.
+The output from the program is shown in Figure 24.1.
+Private Sub PictureBox1_Click(ByVal sender As System.Object, _
+			ByVal e As System.EventArgs) _
+			Handles PictureBox1.Click
+	Dim paper As Graphics = PictureBox1.CreateGraphics()
+	Dim circle1 As Circle = New Circle(20, 20)
+	Dim square1 As Square = New Square(80, 80)
+	Dim group As List(Of Shape) = New List(Of Shape)
+	group.Add(circle1)
+	group.Add(square1)
+	For Each aShape As Shape In group
+		aShape.Display(paper)
+	Next
+End Sub
+Polymorphism is in use here – the method Display is called on two occasions (within the For loop) with different results according to which object is in use. You can see that the two calls of Display:
+aShape.Display(paper)
+give two different outputs. This is not necessarily what you might expect, but it is en-
+tirely correct. Two different outputs are displayed because the VB system automatically selects the version of Display associated with the class of the object (not the class of 
+the variable that refers to it). The class of an object is determined when the object is
+created using New, and stays the same whatever happens to the object. Whatever you 
+do to an object in a program, it always retains the properties it had when it was created. An object can be assigned to a variable of another class and passed around the program as a parameter, but it never loses its true identity. ‘Once a square, always a square’ might be an appropriate slogan.
+When method Display is ﬁrst called, the variable aShape contains the object circle1 and so the version of Display in the class Circle is called. The corresponding thing happens with square1.
+When you call a method (or use a property), polymorphism makes sure that the appropriate version of the method (or property) is automatically selected. Most of the time when you program in VB you are not aware that the VB system is selecting 
+the correct method to call. It is automatic and invisible.
+In the family analogy, you retain your identity and your relationship with your 
+ancestors whether you get married, change your name, move to another country or whatever. This seems common sense, and indeed it is.
+Polymorphism allows us to write a single statement such as:
+aShape.Display(paper)
+instead of a series of If statements like this:
+If TypeOf aShape Is Square Then
+	aShape.DisplaySquare(paper)
+End If
+If TypeOf aShape Is Circle Then
+	aShape.DisplayCircle(paper)
+End If
+which is more clumsy and long-winded. This uses a VB feature, TypeOf, to test whether an object belongs to a particular class. If there were a large number of shapes, there would be a correspondingly large number of If statements. This demonstrates how powerful and concise polymorphism is.
+As we have seen in this small example, polymorphism often makes a segment of 
+program smaller and neater through the elimination of a series of If statements. But this achievement is much more signiﬁcant than it may seem. It means that a statement like:
+aShape.Display(paper)
+knows nothing about the possible variety of objects that may be used as the value of aShape. So information hiding (already present in large measure in an OO program) is extended. We can check this out by assessing how much we would need to change this program to accommodate some new type of shape (some additional subclass of Shape), say an ellipse. The answer is that we would not need to modify it at all. Thus polymorphism enhances modularity, reusability and maintainability.
+Programming principles
+Polymorphism represents the third major element of OOP. The complete set of three are:
+1.	Encapsulation – objects can be made highly modular.
+2.	Inheritance – desirable features in an existing class can be reused in other classes, without affecting the integrity of the original class.
+3.	Polymorphism – designing code that can easily manipulate objects of different classes. Differences between similar objects can be accommodated easily.
+Novice programmers normally start out by using encapsulation, later move on to inheritance and subsequently use polymorphism.
+The case study presented above uses a diversity of objects (shapes) that have common factors incorporated into a superclass. Now we know that the facility of inheritance helps describe the similarity of groups of objects in an economical fashion. The other side of the coin is using objects, and this is where polymorphism helps us to use objects in a concise uniform way. The diversity is handled not by a proliferation of If statements, but instead by a single method call:
+aShape.Display(paper)
+so making use of polymorphism to select the appropriate method. When this happens the version of the method Display that matches the actual object is selected. This can only be decided when the program is running, immediately before the method is called. This is termed late binding, dynamic linking or delayed binding. It is an essential feature of a language that supports polymorphism.
+Polymorphism helps construct programs that are:
+l	concise (shorter than they might otherwise be);
+l	modular (unrelated parts are kept separate);
+l	easy to change and adapt (for example, introducing new objects).
+In general, the approach to exploiting polymorphism within a particular program is as follows:
+1.	Use the same names for similar methods and properties.
+2.	Identify any similarities (common methods, properties and variables) between any objects or classes in the program.
+3.	Design a superclass that embodies the common features of the classes.
+4.	Design the subclasses that describe the distinctive features of each of the classes, whilst inheriting the common features from the superclass.
+5.	Identify any place in the program where the same operation must be applied to any of the similar objects. It may be tempting to use If statements at this location. Instead, this is the place to use polymorphism.
+6.	Make sure that the superclass contains an abstract method (or property) corresponding to every method (or property) that is to be used polymorphically.
+Programming pitfalls
+If you are exploiting polymorphism, and grouping a number of classes under a single superclass, you must ensure that the superclass describes all the methods and properties that will be used on any instance of the superclass. Sometimes this will require abstract methods and properties in the superclass that serve no purpose other than enabling the program to compile.
+New language elements
+The keyword TypeOf allows the program to test whether an object belongs to a particu-
+lar class.
+Summary
+l	The principles of polymorphism are:
+1. An object always retains the identity of the class from which it was created. (An object can never be converted into an object of another class.)
+2. When a method or property is used on an object, the appropriate method or property is automatically selected.
+l	Polymorphism enhances information hiding and reusability by helping to make pieces of code widely applicable.
+exercises
+24.1	An abstract class Animal has constructor method New, a property Weight, and a function method Says. The Weight property represents the weight of the animal, an Integer value. Says returns a string, the noise that the animal makes. Class Animal has subclasses Cow, Snake and Pig. These subclasses have different implementations of Says, returning values “moo”, “hiss” and “grunt” respectively. Write the class Animal and the three subclasses. Create objects petCow, petSnake and petPig respectively from the three classes and use their properties and methods. Display 
+the information in a text box.
+24.2	In the shapes program add a new shape – a straight line – to the collection of available shapes. Use the library method DisplayLine to actually draw a line 
+object. Add code to create a line object, add it to the list of objects (in the list) 
+and display it along with the other shapes.
+24.3	Enhance the shapes program into a full-blown drawing package that allows shapes to be selected from a menu and placed at a desired location in a picture box. The user speciﬁes the position with a mouse click.
+24.4	A bank offers its customers two kinds of account – a regular account and a gold account. The two types of account provide some shared facilities but they also offer distinctive features. The common facilities are:
+l	recording name and address;
+l	opening an account with an initial balance;
+l	maintaining and displaying a record of the current balance;
+l	methods to deposit and withdraw an amount of money.
+	A regular account cannot be overdrawn. A gold account holder can overdraw indeﬁnitely. A regular account has interest calculated as 5% per year of the amount. A gold account has interest at 6% per year, less a ﬁxed charge of $100 per year.
+Write a class that describes the common features and classes to describe regular and gold accounts.
+Construct a program to use these classes by creating two bank accounts – one a regular account, and the other a gold account. Each is created with a person’s name and some initial amount of money. Display the name, balance and interest of each account.
+
+

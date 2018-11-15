@@ -1,0 +1,325 @@
+\chapter{Testing}
+
+22
+Testing
+This chapter explains:
+l	why exhaustive testing is not feasible;
+l	how to carry out functional testing;
+l	how to carry out structural testing;
+l	how to perform walkthroughs;
+l	how to carry out testing using single stepping;
+l	the role of formal veriﬁcation;
+l	incremental development.
+l Introduction
+Programs are complex and it is difﬁcult to make them work correctly. Testing is the set of techniques used to attempt to verify that a program does work correctly. Put another way, testing attempts to reveal the existence of bugs. Once you realize that there is a bug, you then need to locate it using debugging (see Chapter 9). As we shall see, testing techniques cannot guarantee to expose all the bugs in a program and so most large programs have hidden bugs in them. Nonetheless testing is enormously important. This is evidenced by the fact that it can typically consume up to one half of the total time spent on developing a program. At Microsoft, for example, there are teams of programmers (who write programs) and separate teams of testers (who test programs). There are as many testers as programmers. Because it needs so much time and effort to test and debug programs, often a decision has to be made whether to continue the testing or whether to deliver the program in its current state to the customers or clients.
+In academic circles, the task of trying to ensure that a program does what is expected is called veriﬁcation. The aim is to verify that a program meets its speciﬁcation.
+In this chapter we will see how to carry out testing systematically, review different approaches to veriﬁcation and see what their deﬁciencies are.
+The techniques we will review are:
+l	black box or functional testing;
+l	white box or structural testing;
+l	reviews or walkthroughs;
+l	stepping through code with a debugger;
+l	formal methods.
+A small program that consists only of a single class can usually be tested all at once. A larger program that involves two or more classes may be of such complexity that it must be tested in pieces. In VB the natural size for these pieces is the class and it is convenient to test a program class by class. This is called unit testing. When the complete program is brought together for testing the task is called integration or system testing.
+We will also look at developing a program bit-by-bit, rather than as a complete 
+program.
+l Program speciﬁcations
+The starting point for any testing is the speciﬁcation. Time is never wasted in studying and clarifying the speciﬁcation. This may well necessitate going back to the client or the future user of the program. Take the following speciﬁcation, for example:
+Write a program that inputs a series of numbers via a text box. The program calculates and displays the sum of the numbers.
+On ﬁrst reading, this speciﬁcation may look simple and clear. But, even though it is so short, it contains pitfalls:
+l	Are the numbers integers or ﬂoating-point?
+l	What is the permissible range and precision of the numbers?
+l	Are negative numbers to be included in the sum?
+These questions should be clariﬁed before the programmer starts any programming. Indeed it is part of the job of programming to study the speciﬁcation, discover any omissions or confusions, and gain agreement to a clear speciﬁcation. After all, it is no use writing a brilliant program if it doesn’t do what the client wanted.
+Here now is a clearer version of the speciﬁcation, which we will use as a case study in looking at testing methods:
+Write a program that inputs a series of integers via a text box. The integers are in the range 0 to 10 000. The program calculates and displays the sum of the numbers.
+You can see that this speciﬁcation is more precise – for example it stipulates the permissible range of input values.
+
+self-test question
+22.1	Can you see any remaining deﬁciencies in the speciﬁcation that need clariﬁcation?
+l Exhaustive testing
+One approach to testing would be to test a program with all possible data values as input. But consider even the simplest of programs: one that inputs a pair of integer numbers and displays their product. Exhaustive testing would mean that we select all possible values of the ﬁrst number and all possible values for the second. And then we use all possible combinations of numbers. In VB, an Integer number has a huge range of possible values. All in all, the number of possible combinations of numbers is enormous. All the different values would have to be keyed in and the program run. The human time taken to assemble the test data would be years. Even the time that the computer needs would be days – fast as they are. Finally, checking that the computer had got the answers correct would drive someone mad with tedium.
+Thus exhaustive testing – even for a small and simple program – is not feasible. It is important to recognize that perfect testing, for all but the smallest program, is imposs-ible. Therefore we have to adopt some other approach.
+l Black box (functional) testing
+Knowing that exhaustive testing is infeasible, the black box approach to testing is to devise sample data that is representative of all possible data. Then we run the program, input the data and see what happens. This type of testing is termed black box testing because no knowledge of the workings of the program is used as part of the testing – we only consider inputs and outputs. The program is thought of as being invisibly enclosed within a black box. Black box testing is also known as functional testing because it uses only a knowledge of the function of the program (not how it works).
+Ideally, testing proceeds by writing down the test data and the expected outcome of the test, before testing takes place. This is called a test speciﬁcation or schedule. Then you run the program, input the data and examine the outputs for discrepancies between the predicted outcome and the actual outcome. Test data should also check out whether exceptions are handled by the program in accordance with its speciﬁcation.
+Consider a program that decides whether a person can vote, depending on their age (Figure 22.1). The minimum voting age is 18.
+We know that we cannot realistically test this program with all possible values, but instead we need some typical values. This approach to devising test data for black box testing is to use equivalence partitioning. This means looking at the nature of the input data to identify common features. Such a common feature is called a partition. In the voting program, we recognize that the input data falls into two partitions:
+l	the numbers less than 18;
+l	the numbers greater than or equal to 18.
+This can be diagrammed as follows:
+0           	17	18        	inﬁnity
+There are two partitions, one including the age range 0 to 17 and the other partition with numbers 18 to inﬁnity. We then take the step of asserting that every number within a partition is equivalent to any other, for the purpose of testing this program. (Hence the term equivalence partitioning.) We now argue that the number 12 is 
+equivalent to any other in the ﬁrst partition and the number 21 is equivalent to any
+number in the second. So we devise two tests:
+ 
+Test number	Data	Outcome
+
+1	12	cannot vote
+2	21	can vote
+
+We have reasoned that we need two sets of test data to test this program. These two sets, together with a statement of the expected outcomes from testing, constitute a test speciﬁcation. We run the program with the two sets of data and note any discrepancies between predicted and actual outcome.
+Unfortunately we can see that these tests have not investigated the important 
+distinction between someone aged 17 and someone aged 18. Anyone who has ever written a program knows that using If statements is error prone. So it is advisable to investigate this particular region of the data. This is the same as recognizing that data values at the edges of the partitions are worthy of inclusion into the testing. Therefore we create two additional tests:
+
+Test number	Data	Outcome
+
+3	17	cannot vote
+4	18	can vote
+
+In summary, the rules for selecting test data for black box testing using equivalence partitioning are:
+1.	Partition the input data values.
+2.	Select representative data from each partition (equivalent data).
+3.	Select data at the boundaries of partitions.
+We have now selected the data for testing. In this program, there is a single input; there are four data values and therefore four tests. However, most programs process a number of inputs. Suppose we wish to test a program that displays the larger of two numbers, each in the range 0 to 10 000, entered into a pair of text boxes. If the values are equal, the program displays either value.
+Each input is within a partition that runs from 0 to 10 000. We choose values at each end of the partitions and sample values somewhere in the middle:
+First number:	0	 54	10 000
+
+Second number:	0	142	10 000
+Now that we have selected representative values, we need to consider what combinations of values we should use. Exhaustive testing would mean using every possible combination of every possible data value – but this is, of course, infeasible. Instead, we use every combination of the representative values. So the tests are:
+
+Test number	First number	Second number	Outcome
+
+1	0	0	0
+2	0	142	142
+3	0	10 000	10 000
+4	54	0	54
+5	54	142	142
+6	54	10 000	10 000
+7	10 000	0	10 000
+8	10 000	142	10 000
+9	10 000	10 000	10 000
+
+Thus the additional step in testing is to use every combination of the (limited) representative data values.
+
+self-test question
+22.2	In a program to play the game of chess, the player speciﬁes the destination for a move as a pair of indices, the row and column number. The program checks that the destination square is valid, that is, not outside the board. Devise black box test data to check that this part of the program is working correctly.
+l White box (structural) testing
+White box testing makes use of knowledge of how the program works – the structure of the program – as the basis for devising test data. In white box testing every statement in the program is executed at some time during the testing. This is equivalent to ensuring that every path (every sequence of instructions) through the program is executed at some time during testing. This testing should include any exception handling carried out by the program.
+Here is the code for the voting checker program we are using as a case study:
+Private Sub Button1_Click(ByVal sender As System.Object, _
+			ByVal e As System.EventArgs) _
+			Handles Button1.Click
+	Dim age As Integer
+	age = CInt(TextBox1.Text)
+	If age >= 18 Then
+		Label1.Text = “you can vote”
+	Else
+		Label1.Text = “you cannot vote”
+	End If
+End Sub
+In this program, there are two paths (because the If has two branches) and therefore two sets of data will serve to ensure that all statements are executed at some time during the testing:
+
+Test number	Data	Expected outcome
+
+1	12	cannot vote
+2	21	can vote
+
+If we are cautious, we realize that errors in programming are often made within the conditions of If and While statements. So we add a further two tests to ensure that the If statement is working correctly:
+
+Test number	Data	Expected outcome
+
+3	17	cannot vote
+4	18	can vote
+ 
+Thus we need four sets of data to test this program in a white box fashion. This 
+happens to be the same data that we devised for black box testing. But the reasoning that led to the two sets of data is different. Had the program been written differently, the white box test data would be different. Suppose, for example, the program used 
+an array, named table, with one element for each age specifying whether someone 
+of that age can vote. Then the program is simply the following statement to lookup 
+eligibility:
+Label1.Text = table(age)
+and the white box testing data is different.
+
+self-test questions
+22.3	A program’s function is to ﬁnd the largest of three numbers. Devise white box test data for this section of program.
+The code is:
+Dim a, b, c As Integer
+Dim largest As Integer
+If a > b Then
+		If a > c
+			largest = a
+		Else
+			largest = c
+		End If
+Else
+		If b > c Then
+			largest = b
+		Else
+			largest = c
+		End If
+End If
+22.4	In a program to play the game of chess, the player speciﬁes the destination 
+for a move as a pair of integer subscripts, the row and column number. The 
+program checks that the destination square is valid, that is, not outside the board. Devise white box test data to check that this part of the program is working correctly.
+
+The code for this part of the program is:
+If (row > 8) Or (row < 1) Then
+	MessageBox.Show(“error”)
+End If
+If (col > 8) Or (col < 1) Then
+	MessageBox.Show(“error”)
+End If
+l Inspections and walkthroughs
+This is an approach that doesn’t make use of a computer at all in trying to eradicate faults – it is called inspection or a walkthrough. In an inspection, someone simply studies the program listing (along with the speciﬁcation) in order to try to see bugs. It works better if the person doing the inspecting is not the person who wrote the program. This is because people tend to be blind to their own errors. So get a friend or a colleague to inspect your program. It is extraordinary to witness how quickly someone else sees an error that has been defeating you for hours.
+To inspect a program you need:
+l	the speciﬁcation;
+l	the text of the program on paper.
+In carrying out an inspection, one approach is to study it a method at a time. Some of the checks are fairly mechanical:
+l	variables initialized;
+l	loops correctly initialized and terminated;
+l	method calls have the correct parameters.
+Further checking examines the logic of the program. Pretend to execute the method as if you were a computer, avoiding following any method calls into other methods. (This is why a walkthrough is so-called.) Check that:
+l	the logic of the method achieves its desired purpose.
+During inspection, you can check that:
+l	variable and method names are meaningful;
+l	the logic is clear and correct.
+Although the prime goal of an inspection is not to check for style, a weakness in any of these areas may point to a bug.
+The evidence from controlled experiments suggests that inspections are a very effect-
+ive way of ﬁnding errors. In fact inspections are at least as good a way of identifying bugs as actually running the program (doing testing).
+l Stepping through code
+The debugger within the VB IDE (Chapter 9) allows you to step through a program, executing just one instruction at a time. This is called single stepping. Each time you execute an instruction you can see which path of execution has been taken. You can also see (or watch) the values of variables by placing the cursor over a variable name. It is rather like an automated structured walkthrough.
+In this form of testing you concentrate on the variables and closely check their values as they are changed by the program, to verify that they have been changed correctly.
+Whereas the debugger is usually used for debugging (locating a bug), in this technique it is used for testing (denying or conﬁrming the existence of a bug).
+l Formal veriﬁcation
+Formal methods employ the precision and power of mathematics in attempting to
+verify that a program meets its speciﬁcation. They then place emphasis on the precision of the speciﬁcation, which must ﬁrst be rewritten in a formal mathematical notation. One such speciﬁcation language is called Z. Once the formal speciﬁcation for a program has been written, there are two alternative approaches:
+1.	Write the program and then verify that it conforms to the speciﬁcation. This requires considerable time and skill.
+2.	Derive the program from the speciﬁcation by means of a series of transformations, each of which preserve the correctness of the product. This is currently the favoured approach.
+Formal veriﬁcation is very appealing because of its potential for rigorously verifying a program’s correctness beyond all possible doubt. However, it must be remembered that these methods are carried out by fallible human beings who make mistakes. So they are not a cure-all.
+Formal veriﬁcation is still in its infancy and is not widely used in industry and commerce, except in a few safety-critical applications. Further discussion of this approach is beyond the scope of this book.
+l Incremental development
+One approach to writing a program is to write the complete program, key it in and try to run it. The salient word here is ‘try’, because most programmers ﬁnd that the friendly compiler will ﬁnd lots of errors in their program. It can be very disheartening – particularly for novices – to see so many errors displayed by a program that was the result 
+of so much effort. Once the compilation errors have been banished, the program will usually exhibit strange behaviours during the (sometimes lengthy) period of debugging and testing. If all the parts of a program are keyed in together for testing, it can be difﬁcult to locate any errors. A useful technique for helping to avoid these frustrations is to do things bit by bit. Thus an alternative to big-bang development is piece-by-piece programming – usually called incremental programming. The steps are:
+1.	Design and construct the user interface (the form).
+2.	Write a small piece of the program.
+3.	Key it in, ﬁx the syntax errors, run it and debug it.
+4.	Add a new small piece of the program.
+5.	Repeat from step 2 until the program is complete.
+The trick is to identify which piece of program to start with and which order to do things in. The best approach is probably to start by writing the simplest of the event-handling methods. Then write any methods that are used by this ﬁrst method. Then write another event-handling method, and so on.
+Programming principles
+There is no foolproof testing method that will ensure that a program is free of errors. The best approach would be to use a combination of testing methods – black box, white box and inspection – because they have been shown to ﬁnd different errors. To use all three methods is, however, very time consuming. So you need to exercise consid-
+erable judgement and skill to decide what sort of testing to do and how much testing to do. A systematic approach is vital.
+Incremental testing avoids looking for a needle in a haystack, since a newly discovered error is probably in the newly incorporated class.
+Testing is a frustrating business, because we know that, however patient and system-atic we are, we can never be sure that we have done enough. Testing requires massive patience, attention to detail and organization.
+Writing a program is a constructive experience, but testing is destructive. It can be difﬁcult to try to demolish an object of pride that it has taken hours to create – knowing that if an error is found, then further hours may be needed in order to rectify the problem. So it is all too easy to behave like an ostrich during testing, trying to avoid 
+the problems.
+Summary
+l	Testing is a technique that tries to establish that a program is free from errors.
+l	Testing cannot be exhaustive because there are too many cases.
+l	Black box testing uses only the speciﬁcation to choose test data.
+l	White box testing uses a knowledge of how the program works in order to choose test data.
+l	Inspection simply means studying the program listing in order to ﬁnd errors.
+l	Stepping through code using a debugger can be a valuable way of testing a 
+program.
+l	Incremental development can avoid the complexities of developing large 
+programs.
+exercises
+22.1	Devise black box and white box test data to test the following program. The speciﬁcation is:
+The program inputs integers using a text box and a button. The program displays the largest of the numbers entered so far.
+	Try not to look at the text of the program, given below, until you have completed the design of the black box data.
+At class level, there is an instance variable declaration:
+Private largest As Integer = 0
+	The event-handling code is:
+Private Sub Button1_Click(ByVal sender As System.Object, _
+			ByVal e As System.EventArgs) _
+			Handles Button1.Click
+	Dim number As Integer
+	number = CInt(TextBox1.Text)
+	If number > largest Then
+		largest = number
+	End If
+	Label1.Text = “largest so far is “ & CStr(largest)
+End Sub
+22.2	Devise black box and white box test data to test the following program. The speciﬁcation is given below. Try not to look at the text of the program, also
+given below, until you have completed the design of the black box data.
+The program determines insurance premiums for a holiday, based upon the age and gender (male or female) of the client.
+For a female of age >= 18 and <= 30 the premium is $5.
+A female aged >= 31 pays $3.50.
+A male of age >= 18 and <= 35 pays $6.
+A male aged >= 36 pays $5.50.
+Any other ages or genders are an error, which is signalled as a premium of zero.
+	The code for this program is:
+Public Function CalcPremium(ByVal age As Double, _
+						ByVal gender As String) As Double
+	Dim premium As Double
+	If gender = “female” Then
+		If (age >= 18) And (age <= 30) Then
+			premium = 5.0
+		Else
+			If age >= 31 Then
+				premium = 3.50
+			Else
+				premium = 0
+			End If
+		End If
+	Else
+		If gender = “male” Then
+			If (age >= 18) And (age <= 35) Then
+				premium = 6.0
+			Else
+				If age >= 36 Then
+					premium = 5.5
+				Else
+					premium = 0
+				End If
+			End If
+		Else
+			premium = 0
+		End If
+	End If
+	Return premium
+End Function
+
+answers to self-test questions
+22.1	The speciﬁcation does not say what is to happen if an exception arises. There are several possibilities. The ﬁrst situation is if the user enters data that is not a valid integer – for example a letter is entered instead of a digit. The next situation is if the user enters a number greater than 10 000. The ﬁnal eventuality that might arise is if the sum of the numbers exceeds the size of number that can be accommodated by the computer. If integers are represented as Integer types in the program, this limit is huge, but it could arise.
+
+22.2	A row number is in three partitions:
+	1. within the range 1 to 8;
+	2. less than 1;
+	3. greater than 8.
+	If we choose one representative value in each partition (say 3, –3 and 11 respect-
+ively) and a similar set of values for the column numbers (say 5, –2 and 34), the test data will be:
+
+Test no.	Row	Column	Outcome
+
+1	 3	 5	OK
+2	–3	 5	invalid
+3	11	 5	invalid
+4	 3	–2	invalid
+5	–3	–2	invalid
+6	11	–2	invalid
+7	 3	34	invalid
+8	–3	34	invalid
+9	11	34	invalid
+
+	We now consider that data near the boundary of the partitions is important and therefore add to the test data for each partition so that it becomes:
+	1. within the range 1 to 8 (say 3);
+	2. less than 1 (say –3);
+	3. greater than 8 (say 11);
+	4. boundary value 1;
+	5. boundary value 8;
+	6. boundary value 0;
+	7. boundary value 9;
+	which now gives many more combinations to use as test data.
+22.3	There are four paths through the program, which can be exercised by the following test data:
+
+Test no.	Outcome
+
+1	3	2	1	3
+2	3	2	5	5
+3	2	3	1	3
+4	2	3	5	5
+
+
+
+22.4	There are three paths through the program extract, including the path where neither of the conditions in the If statements are true. But each of the error messages can be triggered by two conditions. Suitable test data is therefore:
+
+Test no.	Row	Column	Outcome
+
+1	5	6	OK
+2	0	4	invalid
+3	9	4	invalid
+4	5	9	invalid
+5	5	0	invalid
+ 
+

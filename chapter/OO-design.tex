@@ -1,0 +1,488 @@
+\chapter{Object-oriented design}
+
+20
+Object-oriented design
+This chapter explains:
+l	how to identify the classes that are needed in a program;
+l	how to distinguish between composition and inheritance;
+l	some guidelines for class design.
+l Introduction
+You probably wouldn’t start to design a bridge by thinking about the size of the rivets. You would ﬁrst make major decisions – like whether the bridge is cantilever or suspension. You wouldn’t begin to design a building by thinking about the colour of the carpets. You would make major decisions ﬁrst – like how many ﬂoors there are to be and where the elevators should be.
+With a small program, design is not really needed – you can simply create the user interface and then go on to write the VB statements. But with a large program, it is widely recognized that the programmer should start with the major decisions rather than the detail. The programmer should do design, do it ﬁrst and do it well. Decisions about detail – like the exact format of a number, or the position of a button – should be postponed. All the stages of programming are crucial, of course, but some are more crucial than others.
+When you start out writing programs, you usually spend a lot of time in trial and error. This is often great fun and very creative. Sometimes you spend some time wrest-ling with the programming language. It takes some time to learn good practice and 
+to recognize bad practice. It takes even longer to adopt an effective design approach to programming. The fun remains, the creativity remains, but the nuisance parts of programming are reduced.
+The design process takes as its input the speciﬁcation of what the program is to do. The end product of the design process is a description of the classes, properties and methods that the program will employ.
+This chapter explains how to use one mainstream approach to designing object-
+oriented programs. We shall use the simple example of the balloon program to illustrate how to do design. We will also introduce a more complex design example.
+l The design problem
+We have seen that an object-oriented program consists of a collection of objects. The problem when starting to develop a new program is to identify suitable objects. We know that once we have identiﬁed the objects, we will reap all the beneﬁts of object-oriented programming (OOP). But the fundamental problem of OOP is how to 
+identify the objects. This is what a design method offers: an approach, a series of 
+steps to identifying the objects. It is just like any other kind of design – you need a method. Knowing the principles of OOP is not enough. By analogy, knowing the 
+laws of physics doesn’t mean you can design a space shuttle; you also have to carry out some design.
+One of the principles used in the design of object-oriented programs is to simulate real-world situations as objects. You build a software model of things in the real world. Here are some examples:
+l	If we are developing an ofﬁce automation system, we set out to simulate users, mail, shared documents, ﬁles.
+l	In a factory automation system, we set out to simulate the different machines, queues of work, orders and deliveries.
+The approach is to identify the objects in the problem to be addressed and to model them as objects in the program.
+Abstraction plays a role in this process. We only need to model relevant parts for the problem to be solved, and we can ignore any irrelevant detail. If we model a balloon, we need to represent its position, its size and its colour. But we need not model the material from which it is made. If we are creating a personnel records system, we will probably model names, addresses and job descriptions but not hobbies and preferred music styles.
+l Identifying objects, methods and properties
+One good way to carry out object-oriented design (OOD) is to examine the software speciﬁcation to extract information about the objects, properties and methods. The approach to identifying objects and methods is:
+1.	look for nouns (things) in the speciﬁcation – these are the objects;
+2.	look for verbs (doing words) in the speciﬁcation – these are the methods.
+Here, for example, is the speciﬁcation for the simple balloon program:
+Write a program to represent a balloon and manipulate the balloon via a GUI. The balloon is displayed as a circle in a picture box. Using buttons, the position of the balloon can be changed by moving it a ﬁxed distance up or down. Using a track bar, the radius of the balloon can be altered. The radius is displayed in a label.
+The form is shown in Figure 20.1.
+We look for verbs and nouns in the speciﬁcation. In the above speciﬁcation, we can see the following nouns:
+GUI, picture box, button, track bar, label, balloon, position, distance, radius
+The GUI provides the user interface to the program. It consists of buttons, a track bar, a label and a picture box. The GUI is represented by an object that is an instance of the class Form1. The button, track bar, label and picture box objects are available as classes in the VB library.
+The GUI object:
+1.	creates the buttons, track bar, label and picture box on the screen;
+2.	handles the events from mouse-clicks on the buttons and track bar;
+3.	creates any other objects that are needed, such as the balloon object;
+4.	calls the methods and uses the properties of the balloon object.
+The next major object is the balloon. It makes use of information to represent its 
+position (x- and y-coordinates), the distance it moves and its radius. One option would be to create completely distinct full-blown objects to represent these items. But it is simpler to represent them simply as Integer variables.
+This completes the identiﬁcation of the objects within the program. We now generalize the objects and design classes corresponding to each object. Thus we need classes GUI, Label, Balloon, etc.
+We now extract the verbs from the speciﬁcation. They are effectively:
+ChangeRadius, MoveUp, MoveDown, DisplayBalloon, DisplayRadius
+We must create corresponding methods within the program we are designing. But we need to decide which object they apply to – the GUI object or the balloon object. It seems reasonable that the verbs MoveUp, MoveDown and DisplayBalloon are methods associated with the balloon object.
+Now we turn our attention to the verbs ChangeRadius and DisplayRadius. We have already decided that the value of the radius is implemented as an Integer variable within the Balloon object. However, the GUI object needs access to this value to display it in the label. It also needs to change the value in response to changes in the value of the track bar. Thus the class Balloon needs to provide access to the value of the radius, and this can be accomplished either:
+1.	using methods (named GetRadius and SetRadius); or
+2.	using a property (named Radius).
+Either approach is equally valid. We choose the second option.
+To sum up, our design for this program consists of two non-library classes, GUI and Balloon, shown in the UML class diagram (Figure 20.2). Class GUI uses class Balloon by making calls on its methods and using its property.
+We can now document each class by means of more detailed class diagrams. Each box describes a single class. It has four compartments, providing information on:
+1.	the class name;
+2.	a list of instance variables;
+3.	a list of methods;
+4.	a list of properties.
+First, here is the description of the class GUI:
+Class GUI
+
+Instance variables
+UpButton As Button
+DownButton As Button
+TrackBar1 As TrackBar
+Label1 As Label
+PictureBox1 As PictureBox
+
+
+Methods
+UpButton_Click
+DownButton_Click
+TrackBar1_Scroll
+Next, here is the class diagram for the Balloon class:
+Class Balloon
+
+Instance variables
+xCoordinate As Integer
+yCoordinate As Integer
+theRadius As Integer
+distance As Integer
+
+
+Methods
+MoveUp
+MoveDown
+Display
+
+
+Properties
+Radius As Integer
+The design of this program is now complete. Design ends at the stage where all the classes, objects, properties and methods are speciﬁed. Design is not concerned with writing (coding) the VB statements that make up these classes, properties and methods. However, it is natural for the reader to be curious about the code, so here is the code for the class GUI:
+At the head of the form class is the instance variable:
+Private theBalloon As Balloon
+Within method New of the form is the creation of the Balloon object:
+theBalloon = New Balloon()
+Then we have the event handlers:
+Private Sub DownButton_Click(ByVal sender As System.Object, _
+			ByVal e As System.EventArgs) _
+			Handles DownButton.Click
+	theBalloon.MoveDown()
+	Draw()
+End Sub
+Private Sub UpButton_Click(ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles UpButton.Click
+	theBalloon.MoveUp()
+	Draw()
+End Sub
+Private Sub TrackBar1_Scroll(ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles TrackBar1.Scroll
+	theBalloon.Radius = TrackBar1.Value
+	Draw()
+End Sub
+And a useful method:
+Private Sub Draw()
+	RadiusLabel.Text = CStr(theBalloon.Radius)
+	theBalloon.Display(PictureBox1)
+End Sub
+This example is a simple one, with just two non-library objects. Nonetheless, it illustrates how to extract objects, methods and properties from a speciﬁcation. We will look at a more complex example in a moment.
+To summarize, the design method for identifying objects and methods is:
+1.	look for nouns in the speciﬁcation – these are objects (or sometimes simple variables);
+2.	look for verbs in the speciﬁcation – these are methods.
+Once the objects have been identiﬁed, it is a simple step to generalize them by converting them into classes.
+Note that, although this program has been designed as two main classes, it could alternatively be designed as a single class. However, the design we have shown makes much more explicit use of the objects present in the speciﬁcation of the program. The design also separates the GUI part of the program from the balloon itself. This is a widely recommended program structure in which the presentation code and the model logic (sometimes termed the domain logic) are separated. It means that each part of the program is easier to modify. For example, it allows the GUI to be changed independ-
+ently of the coding of the Balloon class.
+
+self-test question
+20.1	Code the method MoveDown within class Balloon.
+l Case study in design
+Here is the speciﬁcation for a larger program:
+Cyberspace invader
+Cyberspace invader is a game. A picture box (Figure 20.3) displays a defender and an alien. The alien moves sideways. When it hits a wall, it reverses its direction. The alien periodically launches a bomb that moves vertically downwards. There is only one bomb in existence at any one time. If a bomb hits the defender, the defender loses. The defender moves left or right according to mouse movements. When the mouse is clicked, the defender fires a laser that moves upwards. There is only one laser in existence at a given time. When a laser hits the alien, the defender wins.
+Remember that the major steps in design are:
+1.	Identify objects by searching for nouns in the speciﬁcation.
+2.	Identify methods by searching for adjectives in the speciﬁcation.
+Scanning through the speciﬁcation, we ﬁnd the following nouns. As we might expect, some of these nouns are mentioned more than once.
+game, picture box, defender, alien, wall, bomb, mouse, laser
+These nouns correspond to potential objects, and therefore classes within the program. So we translate these nouns into the names of classes in the model. The noun game becomes class Game. The noun picture box translates into the PictureBox class, available in the library. The nouns defender and alien translate into the classes Defender and Alien respectively. The noun wall need not be implemented as a class because it can be simply accommodated as a detail within the class Alien. The noun bomb translates into class Bomb. The noun mouse need not be a class because mouse-click events can be simply handled by the Game class. Finally we need a class Laser. Thus we arrive at the following list of non-library classes:
+Game, Defender, Alien, Laser, Bomb
+as shown in the class diagram (Figure 20.4).
+We have not yet quite completed our search for objects in the program. In order that collisions can be detected, objects need to know where other objects are and how big they are. Therefore, implicit in the speciﬁcation are the ideas of the position and size of each object – the x- and y-coordinates, height and width of each object. Although these are potentially objects, they can instead be simply implemented as Integer variables within classes Defender, Alien, Laser and Bomb. These could either be accessed via methods or properties. But we choose to use properties named X, Y, Height and Width.
+We now scan the speciﬁcation again, this time looking for verbs that we can attach to the above list of objects. We see:
+display, move, hit, launch, click, fire, win, lose
+Again, some of these words are mentioned more than once. For example, both the aliens and the defender move. Also all the objects in the game need to be displayed.
+One object that we have so far ignored in the design is a timer from the VB library that is set to click at small regular time intervals, in order to implement the animation. Whenever the timer ticks, the objects are moved, the picture box is cleared and all the objects are displayed.
+We now allocate methods to classes, and the speciﬁcation helps us to do this.
+Now we can document each class as a UML class diagram that shows for each class its instance variables, its methods and properties. We start with class Game:
+Class Game
+
+Instance variables
+aPictureBox As PictureBox
+AnimationTimer As Timer
+BombTimer As Timer
+
+Methods
+aPictureBox_MouseMove
+AnimationTimer_Tick
+BombTimer_Tick
+aPictureBox.Click
+Here, for the curious, is the code for this class. It begins with the instance declarations:
+Private paper As Graphics
+Private theDefender As Defender
+Private theLaser As Laser
+Private theBomb As Bomb
+Private theAlien As Alien
+Within the form’s method New:
+paper = aPictureBox.CreateGraphics()
+theDefender = New Defender(defenderImage)
+theAlien = New Alien(alienImage)
+theBomb = New Bomb(bombImage)
+theLaser = New Laser(laserImage)
+Then the event handler methods and other methods:
+Private Sub BombTimer_Tick(ByVal sender As System.Object, _
+		ByVal e As System.EventArgs) _
+		Handles BombTimer.Tick
+	theBomb.Launch(theAlien.X, theAlien.Y)
+End Sub
+Private Sub AnimationTimer_Tick(ByVal sender As System.Object, _
+			ByVal e As System.EventArgs) _
+			Handles AnimationTimer.Tick
+	MoveAll()
+	DrawAll()
+	CheckHits()
+End Sub
+Private Sub EndGame(ByVal winner As String)
+	AnimationTimer.Enabled = False
+	BombTimer.Enabled = False
+	MessageBox.Show("game over - " & winner & " wins")
+End Sub
+Private Sub aPictureBox_MouseMove(ByVal sender As Object, _
+			ByVal e As System.Windows.Forms.MouseEventArgs) _
+			Handles PictureBox1.MouseMove
+	theDefender.Move(e.X - theDefender.Width \ 2)
+	DrawAll()
+End Sub
+Private Sub DrawAll()
+	paper.Clear(Color.White)
+	theDefender.Draw(paper)
+	theAlien.Draw(paper)
+	theLaser.Draw(paper)
+	theBomb.Draw(paper)
+End Sub
+Private Sub aPictureBox_Click(ByVal sender As Object, _
+			ByVal e As System.EventArgs)
+	' create a new laser at the top middle of the defender image
+	Dim initialX As Integer = theDefender.X + theDefender.Width \ 2
+	Dim initialY As Integer = theDefender.Y
+	theLaser.Fire(initialX, initialY)
+End Sub
+Next we consider the defender object. It has a position within the picture box and 
+a size. In response to a mouse movement, it moves. It can be displayed. Therefore its speciﬁcation is:
+Class Defender
+
+Instance variables
+xCoordinate As Integer
+yCoordinate As Integer
+height As Integer
+width As Integer
+ 
+Methods
+Move
+Display
+
+Properties
+X As Integer
+Y As Integer
+Height As Integer
+Width As Integer
+Next we design the Alien class. The alien has a position and a size. Whenever the clock ticks, it moves. Its direction and speed is controlled by the step size that is used when it moves. It can be created and displayed.
+Class Alien
+
+Instance variables
+xCoordinate As Integer
+yCoordinate As Integer
+height As Integer
+width As Integer
+xStep As Integer
+
+Methods
+New
+Move
+Display
+ 
+Properties
+X As Integer
+Y As Integer
+Height As Integer
+Width As Integer
+Next we consider a laser object. A laser has a position and a size. It is created, moves, is fired and is displayed.
+Class Laser
+
+Instance variables
+xCoordinate As Integer
+yCoordinate As Integer
+height As Integer
+width As Integer
+yStep AS Integer
+ 
+Methods
+New
+Move
+Display
+Fire
+ 
+Properties
+X As Integer
+Y As Integer
+Height As Integer
+Width As Integer
+Finally, a bomb is very similar to a laser. One difference is that a bomb moves downwards, whereas a laser moves upwards. Another difference is that we need to check whether a bomb hits the defender, whereas a laser hits the alien.
+
+self-test question
+20.2	Write the class diagram for the Bomb class.
+We now have the full list of classes, and the methods and properties associated with each object – we have modelled the game and designed a structure for the program.
+l Looking for reuse
+The next act of design is to check to make sure that we are not reinventing the wheel. One of the main aims of OOP is to promote reuse of software components. Check whether
+l	what you need might be in one of the libraries;
+l	you may have written a class last month that is what you need;
+l	you may be able to generalize some of the classes you have designed for your program into a more general class that you can inherit from.
+We see in the Cyberspace invader program that we can make good use of GUI components such as the picture box, available in the VB library. Another library component that is useful is a timer.
+If you ﬁnd an existing class that is similar to what you need, think about using 
+inheritance to customize it to do what you want. We looked at how to write the code to achieve inheritance in Chapter 11. We next examine an approach to exploring the relationships between classes using the ‘is-a’ and ‘has-a’ tests.
+l Composition or inheritance?
+Once we have identiﬁed the classes within a program, the next step is to consider the relationships between the classes. The classes that make up a program collaborate with each other to achieve the required behaviour, but they use each other in different ways. An important objective in studying the classes is to identify any inheritance relationships between the classes. If we can ﬁnd any such relationships, we can simplify and shorten the program, making good use of reuse.
+There are two ways in which classes relate to each other:
+1.	Composition. An object creates an object from another class using New. An example is a form that creates a button.
+2.	Inheritance. One class inherits from another. An example is a class that extends the Form class (as most GUI programmes do).
+An important task of design is to distinguish these two cases, so that inheritance can be successfully applied or avoided. One way of checking that we have correctly identiﬁed the appropriate relationships between classes is to use the ‘is-a or has-a’ test:
+l	The use of the phrase ‘is-a’ in the description of an object (or class) signiﬁes that it is probably an inheritance relationship.
+l	The use of the phrase ‘has-a’ indicates that there is no inheritance relationship. Instead the relationship is composition. (An alternative phrase that has the same meaning is ‘consists-of’.)
+Let us look at an example to see how inheritance is identiﬁed. In the speciﬁcation for a program to support the transactions in a bank, we ﬁnd the following information:
+A bank account consists of a person’s name, address, account number and current balance. There are two types of account – current and deposit. Borrowers have to give one week’s notice to withdraw from a deposit account, but the account accrues interest.
+Paraphrasing this speciﬁcation, we could say ‘a current account is a bank account’ and ‘a deposit account is a bank account’. We see the crucial words ‘is a’ and so recognize that bank account is the superclass of both deposit account and current account. Deposit account and current account are each subclasses of account. They will inherit some of the properties and methods from the superclass, for example, a property to access the address and a method to update the balance. Note the relationship between a bank account and a balance – a bank account ‘has a’ balance.
+A class diagram (Figure 20.5) can be useful in describing the inheritance relationships between classes.
+As another example, consider the description of a form: ‘the form has a button and a text box’. This is a ‘has a’ relationship, which is not inheritance. The class representing the form simply declares and instantiates Button and TextBox objects and then uses them.
+In the game program, several of the classes incorporate the same properties. These properties are: X, Y, Height and Width, which represent the position and size of the 
+graphical objects. We can remove these ingredients from each class and place them in 
+a superclass called, say, Sprite. Sprite is a commonly used term for a moving object 
+in games programming. The UML diagram for the Sprite class is:
+Class Sprite
+
+Instance variables
+xCoordinate As Integer
+yCoordinate As Integer
+height As Integer
+width As Integer
+
+Properties
+X As Integer
+Y As Integer
+Height As Integer
+Width As Integer
+The VB code for the class Sprite is as follows:
+Public Class Sprite
+	Protected xValue, yValue, widthValue, heightValue As Integer
+	Public ReadOnly Property X() As Integer
+		Get
+			Return xValue
+		End Get
+	End Property
+	Public ReadOnly Property Y() As Integer
+		Get
+			Return yValue
+		End Get
+	End Property
+	Public ReadOnly Property Width() As Integer
+		Get
+			Return widthValue
+		End Get
+	End Property
+	Public ReadOnly Property Height() As Integer
+		Get
+			Return heightValue
+		End Get
+	End Property
+End Class
+The classes Defender, Alien, Laser and Bomb now inherit these properties from the superclass. Checking the validity of this design, we say ‘each of the classes Defender, Alien, Laser and Bomb is a Sprite’. Figure 20.6 shows the class diagram.
+Now that the design is complete, the code for class Alien is:
+Public Class Alien
+	Inherits Sprite
+	Private stepSize As Integer
+	Private alienImage As PictureBox
+Public Sub New(ByVal initialAlienImage As PictureBox)
+	xValue = 100
+	yValue = 50
+	widthValue = 25
+	heightvalue = 25
+	alienImage = initialAlienImage
+	stepSize = 1
+End Sub
+Public Sub Draw(ByVal paper As Graphics)
+	Dim myImage As Image = alienImage.Image
+	paper.DrawImage(myImage, xValue, yValue, Me.Width, Me.Height)
+End Sub
+Public Sub Move()
+	If xValue > 250 Or xValue < 0 Then
+		stepSize = -stepSize
+	End If
+	xValue = xValue + stepSize
+	End Sub
+End Class
+The code for class Bomb is:
+Public Class Bomb
+	Inherits Sprite
+	Private stepSize As Integer
+	Private bombImage As PictureBox
+	Public Sub New(ByVal initialBombImage As PictureBox)
+		xValue = 100
+		yValue = 50
+		widthValue = 5
+		heightValue = 5
+		stepSize = 1
+		bombImage = initialBombImage
+	End Sub
+	Public Sub Draw(ByVal paper As Graphics)
+		Dim myImage As Image = bombImage.Image
+		paper.DrawImage(myImage, xValue, yValue, Me.Width, Me.Height)
+	End Sub
+	Public Sub Launch(ByVal newX As Integer, ByVal newY As Integer)
+		xValue = newX
+		yValue = newY
+	End Sub
+	Public Sub Move()
+		yValue = yValue + stepSize
+	End Sub
+End Class
+To sum up, the two kinds of relationship between classes are as follows.
+Relationship 
+between classes	Test	VB code involves
+
+Inheritance	is-a	Inherits
+
+Composition	has-a or consists-of	New
+
+
+self-test question
+20.3	Analyse the relationships between the following groups of classes (are they is-a or has-a):
+	1. house, door, roof, dwelling
+	2. person, man, woman
+	3. car, piston, gearbox, engine
+	4. vehicle, car, bus
+l Guidelines for class design
+Use of the design approach that we have described is not guaranteed to lead to the
+perfect design. It is always worthwhile checking the design of each class against the 
+following guidelines.
+Keep data private
+Variables should always be declared as Private (or sometimes Protected), but never 
+as Public. This maintains data hiding, one of the central principles of OOP. If data needs to be accessed or changed, do it via properties or methods provided as part of 
+the class.
+Initialize the data
+Although VB automatically initializes instance variables (but not local variables) to 
+particular values, it is good practice to initialize them explicitly, either within the data declaration itself or as part of a constructor method.
+Avoid large classes
+If a class is more than two pages of text, it is a candidate for consideration for division into two or smaller classes. But this should only be done if there are clearly obvious classes to be formed from the large one. It is counter-productive to split an elegant cohesive class into contrived and ugly classes.
+Make the class, property and method names meaningful
+This will make them easy to use and more appealing for reuse.
+Do not contrive inheritance
+In the game program discussed above, some of the objects move horizontally and 
+some move vertically. So we might consider using classes MovesVertically and MovesHorizontally to exploit this situation. However it turns out that if we investigate these possibilities, no simpliﬁcation is gained and so it is pointless.
+Using inheritance when it is not really appropriate can lead to contrived classes, which are more complex and perhaps longer than they need be.
+When using inheritance, put shared items in the superclass
+In the example of the bank account discussed above, all those variables, methods and properties that are common to all bank accounts should be written as part of the superclass so that they can be shared by all the subclasses without duplication. Examples are the methods to update the address and to update the balance.
+We also saw in the game program that we could identify identical properties in several of the classes, and thus create a superclass named Sprite. There are further promising common elements in the classes Laser, Alien, Defender and Bomb.
+Use refactoring
+After an initial design has been created, or when some coding has been carried out, 
+a study of the design may reveal that some simpliﬁcation is possible. This may mean moving some properties and methods to another class. It may mean creating new classes 
+or amalgamating existing classes. This process is termed refactoring. We have already met a guideline for refactoring – place shared properties and methods in the superclass.
+For example, in the game program, there is an obvious need to test whether objects are colliding. But there are several alternative places in the program where this collision detection can be carried out.
+Refactoring recognizes that it is often not possible to create an initial design that is ideal. Instead the design sometimes evolves towards an optimal structure. This may involve changing the design after coding is under way. Thus development is not carried out in distinct stages.
+Summary
+The OO design task consists of identifying appropriate objects and classes. The steps in the approach to OO design advocated in this chapter are:
+1. Study the speciﬁcation and clarify it if necessary.
+2.	Derive objects, properties and methods from the speciﬁcation, so that the design acts as a model of the application. The verbs are methods and the nouns are objects.
+3.	Generalize the objects into classes.
+4.	Check for reuse of library classes and other existing classes, using composition and inheritance as appropriate. ‘Is-a’ and ‘has-a’ analysis help check out whether inheritance or composition is appropriate.
+5.	Use guidelines to reﬁne a design.
+exercises
+20.1	Write the code for the class Balloon in the balloon program designed in this chapter (Figure 20.1).
+20.2	Complete the development of the Cyberspace invader program.
+20.3	A good design can be judged on how well it copes with modiﬁcations or enhancements. Consider the following enhancements to the Cyberspace 
+invader program. Assess what changes are needed to the design and coding:
+	(a)	multiple lasers and bombs;
+	(b)	a row of aliens;
+	(c)	a line of bunkers that protects the defender from bombs.
+20.4	An alternative design for the Cyberspace invader program uses a class named ScreenManager that:
+	(a)	maintains information about all the objects displayed on the screen;
+	(b)	calls all the objects to display themselves;
+	(c)	detects collisions between any pairs of objects on the screen.
+	Re-design the program so as to use this class.
+20.5	Design the classes for a program with the following speciﬁcation.
+The program acts as a simple desk calculator (Figure 20.7) that acts on integer numbers. A text box acts as a display. The calculator has one button for each of 
+the 10 digits, 0 to 9. It has a button to add and a button to subtract. It has a clear button, to clear the display, and an equals (=) button to get the answer.
+When the clear button is pressed the display is set to zero and the (hidden) total is set to zero.
+When a digit button is pressed, the digit is added to the right of those already in the display (if any).
+When the + button is pressed, the number in the display is added to the total (and similar for the – button). 
+When the equals button is pressed, the value of the total is displayed.
+
+answers to self-test questions
+20.1	Public Sub MoveDown()
+		yCoordinate = yCoordinate + 10
+	End Sub
+20.2	Class Bomb
+
+	Instance variables
+	xCoordinate As Integer
+	yCoordinate As Integer
+	height As Integer
+	width As Integer		
+	yStep AS Integer
+
+	Methods
+	New
+	Move
+	Display
+	Launch
+
+	Properties
+	X As Integer	
+	Y As Integer
+	Height As Integer
+	Width As Integer
+20.3	1. has-a
+	2. is-a
+	3. has-a
+	4. is-a
+
+
