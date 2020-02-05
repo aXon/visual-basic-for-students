@@ -47,7 +47,7 @@
 	\section{Formatting numbers}
 	Formatting is the setting out of text in a convenient way. The display of numbers is especially important, as we do not want them to be misinterpreted. Also we don't always need the detail of unnecessary decimal places. For example, if the value \keyword{33.198765} represents the area of a room in square metres, then all the decimal places are probably not necessary.
 		
-	VB has a large range of facilities for formatting values, but here we restrict ourselves to the most common cases of formatting \keyword{Integer} and \keyword{Double} values. Each data type has a \keyword{Format} method, to which we can pass two parameters:
+	VB has a large range of facilities for formatting values, but here we restrict ourselves to the most common cases of formatting \keyword{Integer} and \keyword{Double} values. The first way of achieving this is through method called \keyword{Format}, to which we can pass two parameters:
 		\begin{itemize}
       \item a value to be formatted, and
       \item a string containing format information.
@@ -118,6 +118,17 @@ The following table gives a summary of the special characters in format strings.
 				, &	Place a comma here.\\ \bottomrule
 			\end{tabular}
 		\end{center}
+
+		The second way of formatting numbers can be achieved through the \keyword{ToString} method, which is part of each \keyword{Integer} and \keyword{Double} object. The previous example with a \keyword{Double} value can be seen in the following example, leading to the same outcome as before:	
+		\begin{lstlisting}
+Dim formattedValue as String
+Dim d as Double = 123.456
+FormattedValue = d.ToString("0.00")
+Label2.Text = formattedValue
+		\end{lstlisting}
+
+
+
 
 		\begin{stqb}
 			\begin{STQ}

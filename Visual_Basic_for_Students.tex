@@ -45,7 +45,7 @@
 \graphicspath{{images/}}
 
 % configurable overrules from https://tex.stackexchange.com/a/28546 - does not work that well with latexmk/luatex - no colouring or change in height
-\usepackage[color=red, width=4pt,height=0.8\baselineskip]{overcolored}
+%\usepackage[color=red, width=4pt,height=0.8\baselineskip]{overcolored}
 
 
 % source code listings
@@ -190,6 +190,17 @@ linkcolor=magenta
 \usepackage{hyperxmp}
 \usepackage{cleveref}
 
+% Here's a compilable example, where \BeforeTOCHead is used to create bookmarks for all such lists like toc, lof and lot.
+% https://tex.stackexchange.com/questions/1820/contents-in-pdf-bookmarks#1824
+\makeatletter
+\BeforeTOCHead{%
+  \cleardoublepage
+    \edef\@tempa{%
+      \noexpand\pdfbookmark[0]{\list@fname}{\@currext}%
+    }\@tempa
+}
+\makeatother
+
 
 % to avoid warnings for PDF strings, disable the new \keyword command. Modified from  https://tex.stackexchange.com/questions/10555/hyperref-warning-token-not-allowed-in-a-pdf-string/10557
 \pdfstringdefDisableCommands{%
@@ -201,8 +212,9 @@ linkcolor=magenta
 \begin{document}
 
 % book class stuff
-\title{\sForget Visual Basic for Students}
-\author{Douglas Bell, Mike Parr \& Nils Bausch}
+%\title{\sForget Visual Basic for Students}
+\title{Visual Basic for Students}
+\author{Douglas Bell, Mike Parr, Nils Bausch \& Giles Tewkesbury}
 \date{\DTMenglishmonthname{\DTMfetchmonth{thistime}} \DTMfetchyear{thistime} (work in progress)}
 \titlehead{}
 \publishers{Published by Nils Bausch}
@@ -222,13 +234,13 @@ linkcolor=magenta
 	
 	% front matter %
 	\thispagestyle{empty}
-	\begin{textblock*}{80mm}(85mm,90mm)
+	\begin{textblock*}{80mm}(80mm,90mm)
 	%\textblockcolour{red}
 	\noindent
 	{\sffamily\LARGE\bfseries Visual Basic for Students}\\
 	\noindent
-		{\sffamily\small Douglas Bell, Mike Parr \& Nils Bausch}\\
-	{\color{darkgray}\rule[5pt]{170pt}{3pt}}
+		{\sffamily\small Douglas Bell, Mike Parr, Nils Bausch \& Giles Tewkesbury}\\
+	{\color{darkgray}\rule[5pt]{225pt}{3pt}}
 	\end{textblock*}
 	\null\newpage
 
