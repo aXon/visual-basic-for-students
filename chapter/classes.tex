@@ -689,31 +689,26 @@ Dim c As Complex = c1.Sum(c2)
 
 		\begin{stab}
 			\begin{enumChapter}
-				\item
-					\begin{lstlisting}
+				\item \ \begin{lstlisting}
 Private myColor As Color
-					\end{lstlisting}
-				\item
-					\begin{lstlisting}
+					\end{lstlisting}	
+				\item \	\begin{lstlisting}
 Public Sub MoveUp(amount As Integer)
 	yCoord = yCoord – amount
 End Sub
 					\end{lstlisting}
-				\item 
-					\begin{lstlisting}
+				\item \ \begin{lstlisting}
 Public Sub ChangeColor(newColor As Color)
 	myColor = newColor
 End Sub
 					\end{lstlisting}
-				\item 
-					\begin{lstlisting}
+				\item \ \begin{lstlisting}
 Public Sub Display(drawArea As Graphics)
 	Dim myPen As Pen = New Pen(myColor)
 	drawArea.DrawEllipse(myPen, x, y, diameter, diameter)
 End Sub
 					\end{lstlisting}
-				\item 
-					\begin{lstlisting}
+				\item \ \begin{lstlisting}
 Public Property YCoord() As Integer
 	Get
 		Return y
@@ -726,8 +721,7 @@ End Property
 				\item	Methods: \keyword{CreditAccount}, \keyword{DebitAccount}, \keyword{CalculateInterest}
 				
 					Properties: \keyword{CurrentBalance}, \keyword{Name}
-				\item
-					\begin{lstlisting}
+				\item \ \begin{lstlisting}
 Public Sub New(initialDiameter As Integer)
 	diameter = initialDiameter
 End Sub
@@ -750,7 +744,7 @@ myBalloon.XCoord = 20
 Dim y = myBalloon.YCoord
 myBalloon.Diameter = 50
 					\end{lstlisting}
-					\item
+					\item \
 					\begin{lstlisting}
 Dim x as Integer
 x = Math.Max(7, 8)
